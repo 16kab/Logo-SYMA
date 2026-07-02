@@ -1,22 +1,28 @@
-import { ensureIdentity, setName } from './identity.js';
+import { getIdentity, setName } from './identity.js';
 
-export function createFeedbackForm(formEl, statusEl) {
+export function createFeedbackForm(formEl, statusEl, identityModal) {
   const nameInput = formEl.querySelector('#feedback-name');
   const messageInput = formEl.querySelector('#feedback-message');
 
-  const identity = ensureIdentity({ promptForName: () => null });
+  const identity = getIdentity();
   if (identity.name) {
     nameInput.value = identity.name;
   }
 
   formEl.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const name = nameInput.value.trim();
+    let name = nameInput.value.trim();
     const message = messageInput.value.trim();
 
     if (!message) {
       statusEl.textContent = "Merci d'écrire un message avant d'envoyer.";
       return;
+    }
+
+    if (!name) {
+      const identity = await identityModal.requireIdentity();
+      name = identity.name;
+      nameInput.value = name;
     }
 
     if (name) {
