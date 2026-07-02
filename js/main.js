@@ -6,11 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
   createComparatorPanel(document.getElementById('panel-left'), {
     paletteKey: 'palette1',
     logoId: 'logo1',
+    bgColor: '#18233f',
+    logoColor: '#ffffff',
   });
 
   createComparatorPanel(document.getElementById('panel-right'), {
     paletteKey: 'palette1',
     logoId: 'logo2',
+    bgColor: '#f7f3e7',
+    logoColor: '#18233f',
   });
 
   createVotesSection({
