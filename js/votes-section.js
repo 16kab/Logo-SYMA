@@ -59,17 +59,21 @@ export function createVotesSection({ colorControlRoot, gridRoot }) {
   }
 
   async function castVote(logoId, value) {
-    const identity = ensureIdentity();
+    try {
+      const identity = ensureIdentity();
 
-    const response = await fetch('/api/vote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ logoId, visitorId: identity.id, name: identity.name, value }),
-    });
-    const result = await response.json();
-    myVotes[logoId] = result.status === 'removed' ? undefined : result.value;
-    await refreshCounts();
-    updateButtonStates();
+      const response = await fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logoId, visitorId: identity.id, name: identity.name, value }),
+      });
+      const result = await response.json();
+      myVotes[logoId] = result.status === 'removed' ? undefined : result.value;
+      await refreshCounts();
+      updateButtonStates();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function updateButtonStates() {
@@ -81,11 +85,15 @@ export function createVotesSection({ colorControlRoot, gridRoot }) {
   }
 
   async function refreshCounts() {
-    const response = await fetch('/api/votes');
-    const data = await response.json();
-    for (const [logoId, card] of cards.entries()) {
-      const counts = data[logoId] || { up: 0, down: 0 };
-      card.countsEl.textContent = `👍 ${counts.up} · 👎 ${counts.down}`;
+    try {
+      const response = await fetch('/api/votes');
+      const data = await response.json();
+      for (const [logoId, card] of cards.entries()) {
+        const counts = data[logoId] || { up: 0, down: 0 };
+        card.countsEl.textContent = `👍 ${counts.up} · 👎 ${counts.down}`;
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

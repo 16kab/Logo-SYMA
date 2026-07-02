@@ -23,16 +23,21 @@ export function createFeedbackForm(formEl, statusEl) {
       setName(name);
     }
 
-    const response = await fetch('/api/message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, message }),
-    });
+    try {
+      const response = await fetch('/api/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message }),
+      });
 
-    if (response.ok) {
-      statusEl.textContent = 'Merci, votre message a bien été envoyé !';
-      messageInput.value = '';
-    } else {
+      if (response.ok) {
+        statusEl.textContent = 'Merci, votre message a bien été envoyé !';
+        messageInput.value = '';
+      } else {
+        statusEl.textContent = 'Une erreur est survenue, réessayez.';
+      }
+    } catch (error) {
+      console.error(error);
       statusEl.textContent = 'Une erreur est survenue, réessayez.';
     }
   });
