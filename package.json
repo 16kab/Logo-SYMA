@@ -8,6 +8,6 @@
     "dev": "node dev-server.js"
   },
   "dependencies": {
-    "@upstash/redis": "^1.38.0"
+    "redis": "^4.7.1"
   }
 }
