@@ -17,7 +17,7 @@ export function withPaletteChange(state, paletteKey) {
     ...state,
     paletteKey,
     bgColor: palette.colors[0],
-    logoColor: palette.colors[0],
+    logoColor: palette.colors[1],
   };
 }
 

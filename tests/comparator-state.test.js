@@ -21,12 +21,12 @@ test('initialState accepts a custom palette and logo', () => {
   assert.equal(state.bgColor, '#f35b43');
 });
 
-test('withPaletteChange resets colors to the new palette first color', () => {
+test('withPaletteChange resets background to first color and logo to second color', () => {
   const state = { logoId: 'logo2', paletteKey: 'palette1', bgColor: '#e0f479', logoColor: '#ffffff' };
   const next = withPaletteChange(state, 'palette2');
   assert.equal(next.paletteKey, 'palette2');
   assert.equal(next.bgColor, '#f35b43');
-  assert.equal(next.logoColor, '#f35b43');
+  assert.equal(next.logoColor, '#610023');
   assert.equal(next.logoId, 'logo2');
 });
 
