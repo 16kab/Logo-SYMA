@@ -1,6 +1,5 @@
 import { LOGOS } from './logos.js';
 import { PALETTES, PALETTE_KEYS } from './palettes.js';
-import { renderPaletteTabs } from './palette-controls.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 import { getIdentity } from './identity.js';
 
@@ -24,15 +23,17 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
   let statusEl = null;
   let submitButton = null;
 
-  function renderPalettePreview(container) {
-    container.innerHTML = '';
-    for (const color of PALETTES[paletteKey].colors) {
+  function createPaletteStack(paletteKeyToRender) {
+    const stack = document.createElement('span');
+    stack.className = 'palette-stack';
+    stack.setAttribute('aria-hidden', 'true');
+    for (const color of PALETTES[paletteKeyToRender].colors) {
       const swatch = document.createElement('span');
-      swatch.className = 'palette-preview__swatch';
+      swatch.className = 'palette-stack__swatch';
       swatch.style.backgroundColor = color;
-      swatch.setAttribute('aria-label', color);
-      container.appendChild(swatch);
+      stack.appendChild(swatch);
     }
+    return stack;
   }
 
   function renderPaletteChoice() {
@@ -40,20 +41,28 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
       <div class="vote-step">
         <p class="eyebrow">Vote</p>
         <h2>Choisissez votre palette préférée</h2>
-        <div class="palette-tabs" data-role="palette-tabs"></div>
-        <div class="palette-preview" data-role="palette-preview" aria-label="Couleurs de la palette sélectionnée"></div>
+        <div class="vote-palette-grid" data-role="palette-grid"></div>
       </div>
     `;
 
-    renderPaletteTabs(
-      colorControlRoot.querySelector('[data-role="palette-tabs"]'),
-      paletteKey,
-      (key) => {
+    const grid = colorControlRoot.querySelector('[data-role="palette-grid"]');
+    for (const key of PALETTE_KEYS) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'vote-palette-card';
+      button.classList.toggle('is-active', key === paletteKey);
+      button.setAttribute('aria-pressed', String(key === paletteKey));
+      button.appendChild(createPaletteStack(key));
+      const label = document.createElement('span');
+      label.className = 'vote-palette-card__label';
+      label.textContent = PALETTES[key].label;
+      button.appendChild(label);
+      button.addEventListener('click', () => {
         paletteKey = key;
         renderPaletteChoice();
-      }
-    );
-    renderPalettePreview(colorControlRoot.querySelector('[data-role="palette-preview"]'));
+      });
+      grid.appendChild(button);
+    }
   }
 
   function updateRankOptionAvailability() {
@@ -71,7 +80,7 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
     gridRoot.innerHTML = `
       <div class="ranking-header">
         <h2>Classez les logos</h2>
-        <p>1 = préféré, 5 = moins préféré.</p>
+        <p>1 = préféré, ${LOGOS.length} = moins préféré.</p>
       </div>
       <div class="ranking-grid" data-role="ranking-grid"></div>
       <p class="form-status" data-role="status" role="status"></p>
@@ -90,11 +99,7 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
           <span>${logo.name}</span>
           <select data-role="rank" data-logo-id="${logo.id}">
             <option value="">Rang</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+            ${LOGOS.map((_, index) => `<option value="${index + 1}">${index + 1}</option>`).join('')}
           </select>
         </label>
       `;
@@ -121,7 +126,7 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
 
   async function submitVote() {
     if (!hasCompleteRanking(ranking)) {
-      statusEl.textContent = 'Merci de classer les cinq logos avec un rang unique de 1 à 5.';
+      statusEl.textContent = `Merci de classer les ${LOGOS.length} logos avec un rang unique de 1 à ${LOGOS.length}.`;
       return;
     }
 

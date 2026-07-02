@@ -2,7 +2,7 @@ import { LOGO_IDS } from '../../js/logos.js';
 import { PALETTE_KEYS } from '../../js/palettes.js';
 
 function emptyRankCounts() {
-  return { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  return Object.fromEntries(LOGO_IDS.map((_, index) => [index + 1, 0]));
 }
 
 export function computeRankedVoteSummary(entries) {

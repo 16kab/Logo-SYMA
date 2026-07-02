@@ -7,8 +7,8 @@ import { LOGOS, LOGO_IDS } from '../js/logos.js';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
-test('exposes exactly 5 logos with sequential ids', () => {
-  assert.deepEqual(LOGO_IDS, ['logo1', 'logo2', 'logo3', 'logo4', 'logo5']);
+test('exposes exactly 6 logos with sequential ids', () => {
+  assert.deepEqual(LOGO_IDS, ['logo1', 'logo2', 'logo3', 'logo4', 'logo5', 'logo6']);
 });
 
 test('each logo file exists on disk', () => {

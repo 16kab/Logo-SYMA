@@ -12,7 +12,8 @@ import {
 test('isValidLogoId accepts known ids and rejects others', () => {
   assert.equal(isValidLogoId('logo1'), true);
   assert.equal(isValidLogoId('logo5'), true);
-  assert.equal(isValidLogoId('logo6'), false);
+  assert.equal(isValidLogoId('logo6'), true);
+  assert.equal(isValidLogoId('logo7'), false);
   assert.equal(isValidLogoId(''), false);
 });
 
@@ -29,21 +30,22 @@ test('isValidPaletteKey accepts known palette keys only', () => {
   assert.equal(isValidPaletteKey(''), false);
 });
 
-test('isValidRanking accepts a complete one-to-five logo ranking', () => {
+test('isValidRanking accepts a complete one-to-six logo ranking', () => {
   assert.equal(isValidRanking({
     logo1: 1,
     logo2: 2,
     logo3: 3,
     logo4: 4,
     logo5: 5,
+    logo6: 6,
   }), true);
 });
 
 test('isValidRanking rejects missing logos, duplicate ranks, and invalid ranks', () => {
-  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4 }), false);
-  assert.equal(isValidRanking({ logo1: 1, logo2: 1, logo3: 3, logo4: 4, logo5: 5 }), false);
-  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 6 }), false);
-  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, fake: 5 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 1, logo3: 3, logo4: 4, logo5: 5, logo6: 6 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 7 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, fake: 6 }), false);
 });
 
 test('sanitizeName trims whitespace and defaults to Anonyme', () => {

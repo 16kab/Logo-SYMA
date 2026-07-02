@@ -9,16 +9,18 @@ test('createEmptyRanking returns an empty rank for every logo', () => {
     logo3: '',
     logo4: '',
     logo5: '',
+    logo6: '',
   });
 });
 
-test('hasCompleteRanking accepts a full unique one-to-five ranking', () => {
+test('hasCompleteRanking accepts a full unique one-to-six ranking', () => {
   assert.equal(hasCompleteRanking({
     logo1: '1',
     logo2: '2',
     logo3: '3',
     logo4: '4',
     logo5: '5',
+    logo6: '6',
   }), true);
 });
 
@@ -29,6 +31,7 @@ test('hasCompleteRanking rejects incomplete or duplicate rankings', () => {
     logo3: '',
     logo4: '4',
     logo5: '5',
+    logo6: '6',
   }), false);
   assert.equal(hasCompleteRanking({
     logo1: '1',
@@ -36,6 +39,7 @@ test('hasCompleteRanking rejects incomplete or duplicate rankings', () => {
     logo3: '3',
     logo4: '4',
     logo5: '5',
+    logo6: '6',
   }), false);
 });
 
@@ -46,11 +50,13 @@ test('normalizeRanking converts select values to numeric ranks', () => {
     logo3: '3',
     logo4: '4',
     logo5: '5',
+    logo6: '6',
   }), {
     logo1: 1,
     logo2: 2,
     logo3: 3,
     logo4: 4,
     logo5: 5,
+    logo6: 6,
   });
 });

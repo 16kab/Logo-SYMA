@@ -21,5 +21,6 @@ test('formatRankingDetail orders logos by rank', () => {
     logo3: 3,
     logo4: 4,
     logo5: 5,
-  }, LOGOS), '1. Logo 2 / 2. Logo 1 / 3. Logo 3 / 4. Logo 4 / 5. Logo 5');
+    logo6: 6,
+  }, LOGOS), '1. Logo 2 / 2. Logo 1 / 3. Logo 3 / 4. Logo 4 / 5. Logo 5 / 6. Logo 6');
 });
