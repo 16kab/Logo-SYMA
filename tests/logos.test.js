@@ -19,3 +19,11 @@ test('each logo file exists on disk', () => {
     assert.ok(existsSync(fullPath), `Missing file for ${logo.id}: ${fullPath}`);
   }
 });
+
+test('each logo favicon file exists on disk when specified', () => {
+  for (const logo of LOGOS) {
+    if (!logo.favicon) continue;
+    const fullPath = path.join(projectRoot, logo.favicon);
+    assert.ok(existsSync(fullPath), `Missing favicon for ${logo.id}: ${fullPath}`);
+  }
+});

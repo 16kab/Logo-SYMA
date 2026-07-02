@@ -11,7 +11,10 @@ import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 
 export function createComparatorPanelMarkup() {
   return `
-    <div class="preview-box comparator-preview" data-role="preview"></div>
+    <div class="preview-box comparator-preview" data-role="preview">
+      <div class="preview-box__logo" data-role="preview-logo"></div>
+      <div class="preview-box__favicon" data-role="favicon-badge"></div>
+    </div>
     <div class="panel-controls">
       <div class="control-group">
         <p class="control-label">Modèle</p>
@@ -66,10 +69,14 @@ export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = 
   root.innerHTML = createComparatorPanelMarkup();
 
   const previewEl = root.querySelector('[data-role="preview"]');
+  const previewLogoEl = root.querySelector('[data-role="preview-logo"]');
+  const faviconBadgeEl = root.querySelector('[data-role="favicon-badge"]');
   const thumbsEl = root.querySelector('[data-role="thumbs"]');
   const paletteTabsEl = root.querySelector('[data-role="palette-tabs"]');
   const bgSwatchesEl = root.querySelector('[data-role="bg-swatches"]');
   const logoSwatchesEl = root.querySelector('[data-role="logo-swatches"]');
+  let faviconElement = null;
+  let loadedFaviconSrc = null;
 
   function renderThumbs() {
     renderLogoThumbs(thumbsEl, state.logoId, (logoId) => {
@@ -95,16 +102,33 @@ export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = 
     }, 'Logo');
   }
 
+  async function renderFaviconBadge(logo) {
+    if (!logo.favicon) {
+      faviconBadgeEl.innerHTML = '';
+      faviconElement = null;
+      loadedFaviconSrc = null;
+      return;
+    }
+
+    if (!faviconElement || loadedFaviconSrc !== logo.favicon) {
+      faviconElement = await loadInlineSvg(logo.favicon, faviconBadgeEl);
+      loadedFaviconSrc = logo.favicon;
+    }
+
+    recolorSvg(faviconElement, '#18233f');
+  }
+
   async function renderPreview() {
     previewEl.style.backgroundColor = state.bgColor;
     const logo = LOGOS.find((item) => item.id === state.logoId);
 
-    if (!svgElement || previewEl.dataset.loadedLogo !== logo.id) {
-      svgElement = await loadInlineSvg(logo.src, previewEl);
-      previewEl.dataset.loadedLogo = logo.id;
+    if (!svgElement || previewLogoEl.dataset.loadedLogo !== logo.id) {
+      svgElement = await loadInlineSvg(logo.src, previewLogoEl);
+      previewLogoEl.dataset.loadedLogo = logo.id;
     }
 
     recolorSvg(svgElement, state.logoColor);
+    await renderFaviconBadge(logo);
   }
 
   function renderAll() {

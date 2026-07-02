@@ -146,6 +146,40 @@ main {
   flex: 0 1 auto;
 }
 
+.comparator-preview {
+  position: relative;
+}
+
+.preview-box__logo {
+  display: contents;
+}
+
+.preview-box__favicon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.preview-box__favicon:empty {
+  display: none;
+}
+
+.preview-box__favicon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .panel-controls {
   display: grid;
   gap: 0.55rem;
