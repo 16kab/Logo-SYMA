@@ -115,8 +115,7 @@
 
 .dev-immersive .comparator-panel,
 .dev-immersive .votes-color-control,
-.dev-immersive .votes-grid,
-.dev-immersive #feedback-form {
+.dev-immersive .votes-grid {
   border-color: var(--border);
   background: rgba(16, 19, 24, 0.88);
   box-shadow: var(--shadow);
@@ -211,108 +210,9 @@
   margin-left: -0.65rem;
 }
 
-.dev-immersive .ranking-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 1.8vw, 1.5rem);
-}
-
-.dev-immersive .ranking-card {
-  border-color: rgba(203, 211, 223, 0.22);
-  background: rgba(12, 15, 20, 0.9);
-  padding: 1rem;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26);
-}
-
-.dev-immersive .ranking-preview {
-  min-height: clamp(260px, 23vw, 420px);
-  border-color: rgba(16, 19, 24, 0.1);
-  background: #ffffff;
-  padding: clamp(1.2rem, 2vw, 2rem);
-}
-
-.dev-immersive .ranking-card label,
-.dev-immersive .rank-field {
-  color: var(--text);
-}
-
-.dev-immersive .rank-picker {
-  position: relative;
-}
-
-.dev-immersive .rank-picker__trigger {
-  min-height: 52px;
-  border-color: rgba(203, 211, 223, 0.3);
-  background: rgba(239, 243, 249, 0.09);
-  color: var(--text);
-  padding-inline: 0.9rem;
-}
-
-.dev-immersive .rank-picker__trigger:hover,
-.dev-immersive .rank-picker__trigger.is-selected {
-  border-color: var(--accent);
-  background: rgba(184, 194, 214, 0.16);
-}
-
-.dev-immersive .rank-picker__menu {
-  border-color: var(--accent);
-  background: #f6f8fc;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
-}
-
-.dev-immersive .rank-picker__option {
-  border-color: rgba(16, 19, 24, 0.1);
-  background: transparent;
-  color: var(--ink);
-}
-
-.dev-immersive .rank-picker__option:hover,
-.dev-immersive .rank-picker__option.is-active {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: #f8fafc;
-}
-
-.dev-immersive #feedback-form input,
-.dev-immersive #feedback-form textarea {
-  min-height: 52px;
-  border-color: rgba(203, 211, 223, 0.3);
-  background-color: rgba(239, 243, 249, 0.09);
-  color: var(--text);
-}
-
-.dev-immersive .primary-action,
-.dev-immersive #feedback-form button,
-.dev-immersive .identity-modal__form button {
-  min-height: 56px;
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--ink);
-  font-weight: 800;
-}
-
-.dev-immersive .primary-action:hover,
-.dev-immersive #feedback-form button:hover,
-.dev-immersive .identity-modal__form button:hover {
-  background: #edf1f7;
-  color: var(--ink);
-}
-
-.dev-immersive #feedback-form label,
 .dev-immersive .ranking-header p,
-.dev-immersive .form-status,
 .dev-immersive #feedback-status {
   color: var(--muted);
-}
-
-.dev-immersive #feedback-form textarea {
-  min-height: 190px;
-}
-
-.dev-immersive .identity-modal__panel {
-  border-color: var(--border);
-  background: #111418;
-  color: var(--text);
 }
 
 .dev-immersive .ranking-list {

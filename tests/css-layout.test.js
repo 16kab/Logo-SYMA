@@ -18,19 +18,6 @@ function cssBlockContaining(selector, property) {
   return '';
 }
 
-test('logo ranking vote grid is fixed to three columns on desktop', () => {
-  const block = cssBlock('.ranking-grid');
-
-  assert.match(block, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-});
-
-test('feedback form spans the full content width', () => {
-  const block = cssBlockContaining('#feedback-form', 'display: grid');
-
-  assert.match(block, /width:\s*100%/);
-  assert.doesNotMatch(block, /max-width:\s*640px/);
-});
-
 test('base stylesheet avoids decorative gradients', () => {
   assert.doesNotMatch(css, /(linear|radial)-gradient/);
 });

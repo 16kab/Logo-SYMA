@@ -20,12 +20,6 @@ test('dev immersive stylesheet is scoped to the local theme class', () => {
   assert.match(css, /\.dev-immersive\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.comparator-panel/);
   assert.match(css, /\.dev-immersive\s+\.vote-palette-card/);
-  assert.match(css, /\.dev-immersive\s+\.ranking-card/);
-  assert.match(css, /\.dev-immersive\s+#feedback-form/);
-});
-
-test('dev immersive vote keeps the professional three-by-two logo gallery', () => {
-  assert.match(css, /\.dev-immersive\s+\.ranking-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
 });
 
 test('dev immersive background uses a neutral charcoal direction instead of brown', () => {
@@ -48,13 +42,6 @@ test('dev immersive interface avoids gradients and replaces the old yellow accen
   assert.doesNotMatch(css, /linear-gradient/);
   assert.match(css, /--accent:\s*#b8c2d6/);
   assert.doesNotMatch(css, /#d6b46d|#e4c985|#b79046|#dcc18a/);
-});
-
-test('dev immersive rank picker uses custom premium dropdown styling', () => {
-  assert.match(css, /\.dev-immersive\s+\.rank-picker\s*\{/);
-  assert.match(css, /\.dev-immersive\s+\.rank-picker__trigger\s*\{/);
-  assert.match(css, /\.dev-immersive\s+\.rank-picker__menu\s*\{/);
-  assert.match(css, /\.dev-immersive\s+\.rank-picker__option\s*\{/);
 });
 
 test('immersive theme styles the drag-and-drop ranking list', () => {
