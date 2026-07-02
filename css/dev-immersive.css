@@ -397,3 +397,132 @@
     transition: none;
   }
 }
+
+.dev-immersive .submission-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  transform: translateY(110%);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--surface);
+  color: var(--ink);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.4);
+}
+
+.dev-immersive .submission-bar.is-visible {
+  transform: translateY(0);
+}
+
+.dev-immersive .submission-bar__inner {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  padding: 1rem clamp(1rem, 3vw, 2rem) 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.4rem;
+}
+
+.dev-immersive .submission-bar__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.dev-immersive .submission-bar__palette {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dev-immersive .submission-bar__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.dev-immersive .submission-bar__label--muted {
+  color: var(--muted);
+}
+
+.dev-immersive .submission-bar__swatches {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dev-immersive .submission-bar__swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(17, 19, 25, 0.15);
+}
+
+.dev-immersive .submission-bar__order {
+  font-size: 0.85rem;
+  color: var(--muted);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.dev-immersive .submission-bar__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  flex: 2 1 420px;
+}
+
+.dev-immersive .submission-bar__name {
+  flex: 1 1 130px;
+}
+
+.dev-immersive .submission-bar__message {
+  flex: 2 1 200px;
+}
+
+.dev-immersive .submission-bar__name,
+.dev-immersive .submission-bar__message {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.dev-immersive .submission-bar__send {
+  flex: 0 0 auto;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #ffffff;
+  font-weight: 600;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.dev-immersive .submission-bar__send:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.dev-immersive .submission-bar__send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dev-immersive .submission-bar__status {
+  flex: 1 1 100%;
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  color: var(--success);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dev-immersive .submission-bar {
+    transition: none;
+  }
+}

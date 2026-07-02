@@ -62,3 +62,9 @@ test('immersive theme styles the drag-and-drop ranking list', () => {
   assert.match(css, /\.dev-immersive\s+\.ranking-row\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.ranking-row__handle\s*\{/);
 });
+
+test('immersive theme styles the submission bar', () => {
+  assert.match(css, /\.dev-immersive\s+\.submission-bar\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.submission-bar\.is-visible\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.submission-bar__send\s*\{/);
+});
