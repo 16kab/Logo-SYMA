@@ -9,8 +9,10 @@ import {
 import { renderPaletteTabs, renderSwatches } from './palette-controls.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 
-export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = LOGOS[0].id } = {}) {
+export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = LOGOS[0].id, bgColor, logoColor } = {}) {
   let state = initialState(paletteKey, logoId);
+  if (bgColor) state = withBgColor(state, bgColor);
+  if (logoColor) state = withLogoColor(state, logoColor);
   let svgElement = null;
 
   root.innerHTML = `

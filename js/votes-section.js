@@ -6,6 +6,8 @@ import { ensureIdentity } from './identity.js';
 
 export function createVotesSection({ colorControlRoot, gridRoot }) {
   let colorState = initialState('palette1', LOGOS[0].id);
+  colorState = withBgColor(colorState, '#18233f');
+  colorState = withLogoColor(colorState, '#ffffff');
   const myVotes = {};
   const cards = new Map();
 
