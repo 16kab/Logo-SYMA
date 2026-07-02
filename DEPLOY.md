@@ -16,10 +16,12 @@
 2. Aucune configuration de build nécessaire (site statique + fonctions serverless détectées automatiquement).
 3. Cliquer sur "Deploy".
 
-## 3. Ajouter le stockage Vercel KV
+## 3. Ajouter le stockage (Upstash Redis)
 
-1. Dans le projet Vercel, onglet **Storage** → **Create Database** → **KV** (Upstash Redis).
-2. Une fois créée, la connecter au projet : Vercel ajoute automatiquement les variables d'environnement `KV_REST_API_URL`, `KV_REST_API_TOKEN` (et autres) à tous les environnements (Production/Preview/Development).
+Vercel KV est déprécié — le stockage passe désormais par une intégration Marketplace Upstash Redis.
+
+1. Dans le projet Vercel, onglet **Storage** → **Marketplace Database Integrations** → rechercher "Redis" → choisir **Upstash**.
+2. Suivre le flux de connexion pour lier la base au projet : l'intégration ajoute automatiquement les variables d'environnement `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` à tous les environnements (Production/Preview/Development).
 
 ## 4. Définir le mot de passe admin
 

@@ -1,5 +1,10 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+let client;
 
 export function getKv() {
-  return kv;
+  if (!client) {
+    client = Redis.fromEnv();
+  }
+  return client;
 }
