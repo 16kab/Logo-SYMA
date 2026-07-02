@@ -31,7 +31,7 @@ Vercel KV est déprécié — le stockage passe désormais par une intégration 
 
 ## 5. Vérifier
 
-- Ouvrir l'URL de production : le comparateur et les votes doivent fonctionner (stockés dans Vercel KV).
+- Ouvrir l'URL de production : le comparateur et les votes doivent fonctionner (stockés dans Upstash Redis).
 - Ouvrir `/admin.html`, se connecter avec `ADMIN_PASSWORD`, vérifier que les votes et messages remontent.
 
 ## Développement local
@@ -41,7 +41,7 @@ npm install
 npm run dev
 ```
 
-Ouvre `http://localhost:3000`. Le serveur de développement utilise un stockage en mémoire (réinitialisé à chaque redémarrage) — aucune connexion à Vercel KV n'est nécessaire en local. Pour tester la page admin en local, définir un mot de passe avant de lancer le serveur :
+Ouvre `http://localhost:3000`. Le serveur de développement utilise un stockage en mémoire (réinitialisé à chaque redémarrage) — aucune connexion à Upstash Redis n'est nécessaire en local. Pour tester la page admin en local, définir un mot de passe avant de lancer le serveur :
 
 ```bash
 # PowerShell
