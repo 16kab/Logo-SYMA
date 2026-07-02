@@ -56,3 +56,9 @@ test('dev immersive rank picker uses custom premium dropdown styling', () => {
   assert.match(css, /\.dev-immersive\s+\.rank-picker__menu\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.rank-picker__option\s*\{/);
 });
+
+test('immersive theme styles the drag-and-drop ranking list', () => {
+  assert.match(css, /\.dev-immersive\s+\.ranking-list\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.ranking-row\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.ranking-row__handle\s*\{/);
+});

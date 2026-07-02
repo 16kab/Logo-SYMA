@@ -314,3 +314,86 @@
   background: #111418;
   color: var(--text);
 }
+
+.dev-immersive .ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dev-immersive .ranking-row {
+  display: grid;
+  grid-template-columns: auto auto 84px 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  color: var(--ink);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  will-change: transform;
+}
+
+.dev-immersive .ranking-row:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.dev-immersive .ranking-row.is-dragging {
+  transform: scale(1.02);
+  box-shadow: var(--shadow);
+  z-index: 3;
+  position: relative;
+  transition: none;
+}
+
+.dev-immersive .ranking-row__handle {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.4rem;
+  border-radius: 6px;
+  cursor: grab;
+  touch-action: none;
+  opacity: 0.5;
+  transition: opacity 180ms ease;
+}
+
+.dev-immersive .ranking-row:hover .ranking-row__handle,
+.dev-immersive .ranking-row__handle:focus-visible {
+  opacity: 1;
+}
+
+.dev-immersive .ranking-row.is-dragging .ranking-row__handle {
+  cursor: grabbing;
+}
+
+.dev-immersive .ranking-row__rank {
+  min-width: 1.6rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+.dev-immersive .ranking-row__preview {
+  width: 84px;
+  height: 56px;
+  border-radius: 6px;
+  padding: 0.4rem;
+}
+
+.dev-immersive .ranking-row__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dev-immersive .ranking-row {
+    transition: none;
+  }
+}
