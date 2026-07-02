@@ -33,6 +33,30 @@ export function createComparatorPanelMarkup() {
   `;
 }
 
+export function renderLogoThumbs(container, activeLogoId, onSelect) {
+  container.innerHTML = '';
+  for (const logo of LOGOS) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'thumb-button';
+    button.title = logo.name;
+    button.classList.toggle('is-active', logo.id === activeLogoId);
+    button.setAttribute('aria-label', `Choisir ${logo.name}`);
+    button.setAttribute('aria-pressed', String(logo.id === activeLogoId));
+
+    const image = document.createElement('img');
+    image.className = 'thumb-button__image';
+    image.src = logo.src;
+    image.alt = '';
+    image.loading = 'lazy';
+    image.setAttribute('aria-hidden', 'true');
+    button.appendChild(image);
+
+    button.addEventListener('click', () => onSelect(logo.id));
+    container.appendChild(button);
+  }
+}
+
 export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = LOGOS[0].id, bgColor, logoColor } = {}) {
   let state = initialState(paletteKey, logoId);
   if (bgColor) state = withBgColor(state, bgColor);
@@ -48,20 +72,10 @@ export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = 
   const logoSwatchesEl = root.querySelector('[data-role="logo-swatches"]');
 
   function renderThumbs() {
-    thumbsEl.innerHTML = '';
-    for (const logo of LOGOS) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'thumb-button';
-      button.textContent = logo.name;
-      button.classList.toggle('is-active', logo.id === state.logoId);
-      button.setAttribute('aria-pressed', String(logo.id === state.logoId));
-      button.addEventListener('click', () => {
-        state = withLogoChange(state, logo.id);
-        renderAll();
-      });
-      thumbsEl.appendChild(button);
-    }
+    renderLogoThumbs(thumbsEl, state.logoId, (logoId) => {
+      state = withLogoChange(state, logoId);
+      renderAll();
+    });
   }
 
   function renderColorPickers() {

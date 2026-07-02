@@ -150,21 +150,21 @@ main {
 
 .panel-controls {
   display: grid;
-  gap: 0.9rem;
-  padding-top: 1rem;
+  gap: 0.55rem;
+  padding-top: 0.75rem;
 }
 
 .control-group {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+  gap: 0.5rem;
   align-items: center;
 }
 
 .control-label {
   margin: 0;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -175,19 +175,43 @@ main {
 .palette-tabs {
   min-width: 0;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   flex-wrap: wrap;
 }
 
 .thumb-button,
 .palette-tab {
-  min-height: 44px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  padding: 0.55rem 0.85rem;
-  transition: border-color var(--fast), background var(--fast), color var(--fast);
+  transition: border-color var(--fast), background var(--fast), color var(--fast), box-shadow var(--fast);
+}
+
+.thumb-button {
+  width: 54px;
+  height: 40px;
+  padding: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.thumb-button__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: brightness(0);
+  opacity: 0.92;
+  object-fit: contain;
+}
+
+.palette-tab {
+  min-height: 36px;
+  padding: 0.42rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 750;
 }
 
 .thumb-button:hover,
@@ -195,7 +219,12 @@ main {
   border-color: var(--border-strong);
 }
 
-.thumb-button.is-active,
+.thumb-button.is-active {
+  border-color: var(--border-strong);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--border-strong), 0 8px 18px rgba(17, 17, 17, 0.08);
+}
+
 .palette-tab.is-active {
   border-color: var(--border-strong);
   background: var(--text);
@@ -203,8 +232,8 @@ main {
 }
 
 .swatch {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
@@ -292,7 +321,7 @@ main {
 
 .ranking-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -432,7 +461,7 @@ main {
 #feedback-form {
   display: grid;
   gap: 0.75rem;
-  max-width: 640px;
+  width: 100%;
 }
 
 #feedback-form label {
@@ -508,7 +537,7 @@ main {
 
   .swatch-row {
     display: grid;
-    grid-template-columns: repeat(4, 44px);
+    grid-template-columns: repeat(4, 34px);
   }
 
   .thumb-row,
