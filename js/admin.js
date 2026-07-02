@@ -11,14 +11,19 @@ function storeToken(token) {
 }
 
 async function login(password) {
-  const response = await fetch('/api/admin-login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password }),
-  });
-  if (!response.ok) return null;
+  let response;
+  try {
+    response = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+  } catch (error) {
+    return { token: null, networkError: true };
+  }
+  if (!response.ok) return { token: null, networkError: false };
   const data = await response.json();
-  return data.token;
+  return { token: data.token, networkError: false };
 }
 
 async function fetchVotes(token) {
@@ -44,13 +49,16 @@ function renderVotes(votesData) {
     const summary = votesData[logo.id] || { up: 0, down: 0, voters: [] };
     const block = document.createElement('div');
     block.className = 'logo-summary';
-    const votersList = (summary.voters || [])
-      .map((voter) => `<li>${voter.name} — ${voter.value === 'up' ? '👍' : '👎'}</li>`)
-      .join('');
     block.innerHTML = `
       <h3>${logo.name} — 👍 ${summary.up} · 👎 ${summary.down}</h3>
-      <ul class="voter-list">${votersList}</ul>
+      <ul class="voter-list"></ul>
     `;
+    const votersList = block.querySelector('.voter-list');
+    for (const voter of summary.voters || []) {
+      const li = document.createElement('li');
+      li.textContent = `${voter.name} — ${voter.value === 'up' ? '👍' : '👎'}`;
+      votersList.appendChild(li);
+    }
     container.appendChild(block);
   }
 }
@@ -62,16 +70,31 @@ function renderMessages(messages) {
   for (const item of messages) {
     const li = document.createElement('li');
     const date = new Date(item.ts).toLocaleString('fr-FR');
-    li.innerHTML = `
-      <p>${item.message}</p>
-      <p class="message-meta">${item.name} — ${date}</p>
-    `;
+
+    const messageEl = document.createElement('p');
+    messageEl.textContent = item.message;
+
+    const metaEl = document.createElement('p');
+    metaEl.className = 'message-meta';
+    metaEl.textContent = `${item.name} — ${date}`;
+
+    li.appendChild(messageEl);
+    li.appendChild(metaEl);
     list.appendChild(li);
   }
 }
 
 async function showDashboard(token) {
-  const [votesData, messages] = await Promise.all([fetchVotes(token), fetchMessages(token)]);
+  let votesData;
+  let messages;
+  try {
+    [votesData, messages] = await Promise.all([fetchVotes(token), fetchMessages(token)]);
+  } catch (error) {
+    document.getElementById('login-section').hidden = false;
+    document.getElementById('dashboard-section').hidden = true;
+    document.getElementById('login-status').textContent = 'Erreur réseau, réessayez.';
+    return;
+  }
 
   if (messages === null) {
     sessionStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -96,10 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const password = document.getElementById('admin-password').value;
-    const token = await login(password);
+    const { token, networkError } = await login(password);
 
     if (!token) {
-      document.getElementById('login-status').textContent = 'Mot de passe incorrect.';
+      document.getElementById('login-status').textContent = networkError
+        ? 'Erreur réseau, réessayez.'
+        : 'Mot de passe incorrect.';
       return;
     }
 
