@@ -14,7 +14,7 @@ export function createComparatorPanelMarkup() {
     <div class="preview-box comparator-preview" data-role="preview"></div>
     <div class="panel-controls">
       <div class="control-group">
-        <p class="control-label">Logo</p>
+        <p class="control-label">Modèle</p>
         <div class="thumb-row" data-role="thumbs"></div>
       </div>
       <div class="control-group">
