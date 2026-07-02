@@ -28,21 +28,6 @@ async function login(password) {
   return { token: data.token, networkError: false };
 }
 
-async function fetchVotes(token) {
-  const response = await fetch('/api/votes', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.json();
-}
-
-async function fetchMessages(token) {
-  const response = await fetch('/api/messages', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (response.status === 401) return null;
-  return response.json();
-}
-
 function getSortableAverage(summary) {
   return Number.isFinite(summary?.averageRank) ? summary.averageRank : Number.POSITIVE_INFINITY;
 }
@@ -228,6 +213,14 @@ export function renderVotes(votesData) {
     }
 
     voterCard.appendChild(voterRanking);
+
+    if (voter.message) {
+      const message = document.createElement('p');
+      message.className = 'admin-voter-card__message';
+      message.textContent = voter.message;
+      voterCard.appendChild(message);
+    }
+
     voterList.appendChild(voterCard);
   }
 
@@ -242,32 +235,18 @@ export function renderVotes(votesData) {
   container.appendChild(voterBlock);
 }
 
-function renderMessages(messages) {
-  const list = document.getElementById('messages-list');
-  list.innerHTML = '';
-
-  for (const item of messages) {
-    const li = document.createElement('li');
-    const date = new Date(item.ts).toLocaleString('fr-FR');
-
-    const messageEl = document.createElement('p');
-    messageEl.textContent = item.message;
-
-    const metaEl = document.createElement('p');
-    metaEl.className = 'message-meta';
-    metaEl.textContent = `${item.name} — ${date}`;
-
-    li.appendChild(messageEl);
-    li.appendChild(metaEl);
-    list.appendChild(li);
-  }
-}
-
 async function showDashboard(token) {
   let votesData;
-  let messages;
   try {
-    [votesData, messages] = await Promise.all([fetchVotes(token), fetchMessages(token)]);
+    const response = await fetch('/api/votes', { headers: { Authorization: `Bearer ${token}` } });
+    if (response.status === 401) {
+      sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+      document.getElementById('login-section').hidden = false;
+      document.getElementById('dashboard-section').hidden = true;
+      document.getElementById('login-status').textContent = 'Session expirée, reconnectez-vous.';
+      return;
+    }
+    votesData = await response.json();
   } catch (error) {
     document.getElementById('login-section').hidden = false;
     document.getElementById('dashboard-section').hidden = true;
@@ -275,18 +254,9 @@ async function showDashboard(token) {
     return;
   }
 
-  if (messages === null) {
-    sessionStorage.removeItem(TOKEN_STORAGE_KEY);
-    document.getElementById('login-section').hidden = false;
-    document.getElementById('dashboard-section').hidden = true;
-    document.getElementById('login-status').textContent = 'Session expirée, reconnectez-vous.';
-    return;
-  }
-
   document.getElementById('login-section').hidden = true;
   document.getElementById('dashboard-section').hidden = false;
   renderVotes(votesData);
-  renderMessages(messages);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -197,3 +197,34 @@ test('renderVotes shows visual palettes and each voter logo ranking with images'
   assert.equal(voterLogoItems.at(-1).getAttribute('data-logo-id'), 'logo7');
   assert.equal(voterLogoItems.at(-1).querySelector('.admin-logo-ranking__image').src, 'SVG/Logo fluid.svg');
 });
+
+test('renderVotes shows a voter message when present', async () => {
+  const { renderVotes } = await loadAdminModule();
+  const container = createFakeElement();
+  const originalDocument = globalThis.document;
+  globalThis.document = {
+    createElement: createFakeElement,
+    getElementById(id) {
+      return id === 'votes-summary' ? container : null;
+    },
+  };
+
+  try {
+    renderVotes({
+      palettes: { palette1: 1, palette2: 0 },
+      logos: {},
+      voters: [{
+        name: 'Marie',
+        paletteKey: 'palette1',
+        ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 },
+        message: "J'adore le logo 3",
+        ts: 1,
+      }],
+    });
+  } finally {
+    globalThis.document = originalDocument;
+  }
+
+  const text = collectText(container);
+  assert.match(text, /J'adore le logo 3/);
+});
