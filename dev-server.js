@@ -56,7 +56,7 @@ async function readBody(req) {
 }
 
 async function serveStatic(req, res, pathname) {
-  const relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\//, '');
+  const relativePath = pathname === '/' ? 'index.html' : decodeURIComponent(pathname).replace(/^\//, '');
   const filePath = path.join(projectRoot, relativePath);
   if (!filePath.startsWith(projectRoot)) {
     res.statusCode = 403;
