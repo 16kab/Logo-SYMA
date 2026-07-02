@@ -1,6 +1,5 @@
 import { getKv } from './_lib/kv.js';
-import { isValidLogoId, isValidVoteValue, sanitizeName } from './_lib/validate.js';
-import { resolveVoteAction } from './_lib/voteLogic.js';
+import { isValidPaletteKey, isValidRanking, sanitizeName } from './_lib/validate.js';
 
 export function createVoteHandler(kv, now = () => Date.now()) {
   return async function voteHandler(req, res) {
@@ -9,28 +8,18 @@ export function createVoteHandler(kv, now = () => Date.now()) {
       return;
     }
 
-    const { logoId, visitorId, name, value } = req.body || {};
+    const { visitorId, name, paletteKey, ranking } = req.body || {};
 
-    if (!isValidLogoId(logoId) || !visitorId || !isValidVoteValue(value)) {
+    if (!visitorId || !isValidPaletteKey(paletteKey) || !isValidRanking(ranking)) {
       res.status(400).json({ error: 'Invalid vote payload' });
       return;
     }
 
-    const key = `vote:${logoId}`;
-    const hash = (await kv.hgetall(key)) || {};
-    const existingEntry = hash[visitorId] || null;
-    const action = resolveVoteAction(existingEntry, value);
-
-    if (action.action === 'delete') {
-      await kv.hdel(key, visitorId);
-      res.status(200).json({ status: 'removed' });
-      return;
-    }
-
-    await kv.hset(key, {
-      [visitorId]: { name: sanitizeName(name), value: action.value, ts: now() },
+    await kv.hset('votes', {
+      [visitorId]: { name: sanitizeName(name), paletteKey, ranking, ts: now() },
     });
-    res.status(200).json({ status: 'saved', value: action.value });
+
+    res.status(200).json({ status: 'saved' });
   };
 }
 

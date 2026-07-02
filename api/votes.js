@@ -1,6 +1,5 @@
 import { getKv } from './_lib/kv.js';
-import { LOGO_IDS } from '../js/logos.js';
-import { computeVoteSummary } from './_lib/voteLogic.js';
+import { computeRankedVoteSummary } from './_lib/voteLogic.js';
 import { extractBearerToken, isAuthorizedToken } from './_lib/adminAuth.js';
 
 export function createVotesHandler(kv, getAdminPassword = () => process.env.ADMIN_PASSWORD) {
@@ -14,21 +13,22 @@ export function createVotesHandler(kv, getAdminPassword = () => process.env.ADMI
     const isAdmin = isAuthorizedToken(token, getAdminPassword());
     const requestUrl = new URL(req.url || '/', 'http://localhost');
     const visitorId = requestUrl.searchParams.get('visitorId');
+    const hash = (await kv.hgetall('votes')) || {};
+    const summary = computeRankedVoteSummary(Object.entries(hash));
+    const result = {
+      palettes: summary.palettes,
+      logos: summary.logos,
+    };
 
-    const result = {};
-    for (const logoId of LOGO_IDS) {
-      const hash = (await kv.hgetall(`vote:${logoId}`)) || {};
-      const summary = computeVoteSummary(Object.entries(hash));
-      if (isAdmin) {
-        result[logoId] = summary;
-      } else {
-        const entry = { up: summary.up, down: summary.down };
-        if (visitorId) {
-          const myVoter = summary.voters.find((voter) => voter.visitorId === visitorId);
-          entry.myVote = myVoter ? myVoter.value : null;
-        }
-        result[logoId] = entry;
-      }
+    if (visitorId && hash[visitorId]) {
+      result.myVote = {
+        paletteKey: hash[visitorId].paletteKey,
+        ranking: hash[visitorId].ranking,
+      };
+    }
+
+    if (isAdmin) {
+      result.voters = summary.voters;
     }
 
     res.status(200).json(result);

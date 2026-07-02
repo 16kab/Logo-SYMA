@@ -4,58 +4,50 @@ import { createVoteHandler } from '../api/vote.js';
 import { createFakeKv } from './helpers/fakeKv.js';
 import { createMockRes } from './helpers/http.js';
 
-test('records a new vote', async () => {
+const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 };
+
+test('records a ranked vote with palette choice', async () => {
   const kv = createFakeKv();
   const handler = createVoteHandler(kv, () => 12345);
   const res = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', name: 'Alexis', value: 'up' } }, res);
+
+  await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking } }, res);
+
   assert.equal(res.statusCode, 200);
-  assert.deepEqual(res.body, { status: 'saved', value: 'up' });
-  const stored = await kv.hgetall('vote:logo1');
-  assert.deepEqual(stored, { v1: { name: 'Alexis', value: 'up', ts: 12345 } });
+  assert.deepEqual(res.body, { status: 'saved' });
+  const stored = await kv.hgetall('votes');
+  assert.deepEqual(stored, {
+    v1: { name: 'Alexis', paletteKey: 'palette1', ranking, ts: 12345 },
+  });
 });
 
-test('toggles off a vote when clicking the same value again', async () => {
-  const kv = createFakeKv();
-  const handler = createVoteHandler(kv, () => 12345);
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', name: 'Alexis', value: 'up' } }, createMockRes());
-  const res2 = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', name: 'Alexis', value: 'up' } }, res2);
-  assert.deepEqual(res2.body, { status: 'removed' });
-  assert.equal(await kv.hgetall('vote:logo1'), null);
-});
-
-test('changes an existing vote to the opposite value', async () => {
+test('replaces an existing ranked vote for the same visitor', async () => {
   const kv = createFakeKv();
   const handler = createVoteHandler(kv, () => 999);
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', name: 'Alexis', value: 'up' } }, createMockRes());
+  await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking } }, createMockRes());
+  const nextRanking = { logo1: 5, logo2: 4, logo3: 3, logo4: 2, logo5: 1 };
   const res = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', name: 'Alexis', value: 'down' } }, res);
-  assert.deepEqual(res.body, { status: 'saved', value: 'down' });
+
+  await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette2', ranking: nextRanking } }, res);
+
+  assert.deepEqual(res.body, { status: 'saved' });
+  const stored = await kv.hgetall('votes');
+  assert.deepEqual(stored.v1, { name: 'Alexis', paletteKey: 'palette2', ranking: nextRanking, ts: 999 });
 });
 
-test('rejects an invalid logoId', async () => {
+test('rejects invalid ranked vote payloads', async () => {
   const kv = createFakeKv();
   const handler = createVoteHandler(kv);
-  const res = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo9', visitorId: 'v1', value: 'up' } }, res);
-  assert.equal(res.statusCode, 400);
-});
 
-test('rejects an invalid vote value', async () => {
-  const kv = createFakeKv();
-  const handler = createVoteHandler(kv);
-  const res = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo1', visitorId: 'v1', value: 'maybe' } }, res);
-  assert.equal(res.statusCode, 400);
-});
-
-test('rejects a missing visitorId', async () => {
-  const kv = createFakeKv();
-  const handler = createVoteHandler(kv);
-  const res = createMockRes();
-  await handler({ method: 'POST', body: { logoId: 'logo1', value: 'up' } }, res);
-  assert.equal(res.statusCode, 400);
+  for (const body of [
+    { visitorId: '', name: 'Alexis', paletteKey: 'palette1', ranking },
+    { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette9', ranking },
+    { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking: { ...ranking, logo5: 4 } },
+  ]) {
+    const res = createMockRes();
+    await handler({ method: 'POST', body }, res);
+    assert.equal(res.statusCode, 400);
+  }
 });
 
 test('rejects non-POST methods', async () => {

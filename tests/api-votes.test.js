@@ -6,39 +6,63 @@ import { createFakeKv } from './helpers/fakeKv.js';
 import { createMockRes } from './helpers/http.js';
 import { computeAdminToken } from '../api/_lib/adminAuth.js';
 
-async function seedVote(kv, logoId, visitorId, name, value) {
-  const voteHandler = createVoteHandler(kv, () => 1);
-  await voteHandler({ method: 'POST', body: { logoId, visitorId, name, value } }, createMockRes());
+const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 };
+
+async function seedVote(kv, visitorId, name, paletteKey, visitorRanking = ranking) {
+  const voteHandler = createVoteHandler(kv, () => (visitorId === 'v1' ? 100 : 200));
+  await voteHandler({ method: 'POST', body: { visitorId, name, paletteKey, ranking: visitorRanking } }, createMockRes());
 }
 
-test('returns aggregated counts without voter detail for anonymous requests', async () => {
+test('returns public aggregate palette and ranking results', async () => {
   const kv = createFakeKv();
-  await seedVote(kv, 'logo1', 'v1', 'Alexis', 'up');
-  await seedVote(kv, 'logo1', 'v2', 'Camille', 'down');
+  await seedVote(kv, 'v1', 'Alexis', 'palette1');
+  await seedVote(kv, 'v2', 'Camille', 'palette2', { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5 });
   const handler = createVotesHandler(kv, () => 'secret');
   const res = createMockRes();
+
   await handler({ method: 'GET', headers: {} }, res);
-  assert.deepEqual(res.body.logo1, { up: 1, down: 1 });
-  assert.equal(res.body.logo1.voters, undefined);
+
+  assert.deepEqual(res.body.palettes, { palette1: 1, palette2: 1 });
+  assert.equal(res.body.logos.logo1.score, 3);
+  assert.equal(res.body.logos.logo1.averageRank, 1.5);
+  assert.equal(res.body.voters, undefined);
 });
 
 test('includes voter detail when a valid admin token is provided', async () => {
   const kv = createFakeKv();
-  await seedVote(kv, 'logo1', 'v1', 'Alexis', 'up');
+  await seedVote(kv, 'v1', 'Alexis', 'palette1');
   const handler = createVotesHandler(kv, () => 'secret');
   const res = createMockRes();
   const token = computeAdminToken('secret');
+
   await handler({ method: 'GET', headers: { authorization: `Bearer ${token}` } }, res);
-  assert.equal(res.body.logo1.voters.length, 1);
-  assert.equal(res.body.logo1.voters[0].name, 'Alexis');
+
+  assert.equal(res.body.voters.length, 1);
+  assert.equal(res.body.voters[0].name, 'Alexis');
+  assert.equal(res.body.voters[0].paletteKey, 'palette1');
+  assert.deepEqual(res.body.voters[0].ranking, ranking);
 });
 
-test('every known logo id is present even with no votes', async () => {
+test('includes requesting visitor own ranked vote when visitorId is provided', async () => {
+  const kv = createFakeKv();
+  await seedVote(kv, 'v1', 'Alexis', 'palette1');
+  const handler = createVotesHandler(kv, () => 'secret');
+  const res = createMockRes();
+
+  await handler({ method: 'GET', headers: {}, url: '/api/votes?visitorId=v1' }, res);
+
+  assert.deepEqual(res.body.myVote, { paletteKey: 'palette1', ranking });
+});
+
+test('returns empty aggregates with no votes', async () => {
   const kv = createFakeKv();
   const handler = createVotesHandler(kv, () => 'secret');
   const res = createMockRes();
+
   await handler({ method: 'GET', headers: {} }, res);
-  assert.deepEqual(Object.keys(res.body).sort(), ['logo1', 'logo2', 'logo3', 'logo4', 'logo5']);
+
+  assert.deepEqual(res.body.palettes, { palette1: 0, palette2: 0 });
+  assert.equal(res.body.logos.logo1.score, 0);
 });
 
 test('rejects non-GET methods', async () => {
@@ -47,15 +71,4 @@ test('rejects non-GET methods', async () => {
   const res = createMockRes();
   await handler({ method: 'POST', headers: {} }, res);
   assert.equal(res.statusCode, 405);
-});
-
-test('includes the requesting visitor own vote value when visitorId is provided', async () => {
-  const kv = createFakeKv();
-  await seedVote(kv, 'logo1', 'v1', 'Alexis', 'up');
-  await seedVote(kv, 'logo1', 'v2', 'Camille', 'down');
-  const handler = createVotesHandler(kv, () => 'secret');
-  const res = createMockRes();
-  await handler({ method: 'GET', headers: {}, url: '/api/votes?visitorId=v2' }, res);
-  assert.equal(res.body.logo1.myVote, 'down');
-  assert.equal(res.body.logo2.myVote, null);
 });
