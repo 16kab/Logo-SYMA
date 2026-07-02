@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYMA Studio — Proposition de logo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>SYMA Studio — Proposition de logo</h1>
+  </header>
+
+  <main>
+    <section class="comparator" aria-label="Comparateur de logos">
+      <div class="comparator-panel" id="panel-left"></div>
+      <div class="comparator-panel" id="panel-right"></div>
+    </section>
+
+    <section class="votes-section" aria-label="Votes">
+      <h2>Votez pour vos logos préférés</h2>
+      <div class="votes-color-control" id="votes-color-control"></div>
+      <div class="votes-grid" id="votes-grid"></div>
+    </section>
+
+    <section class="feedback-section" aria-label="Message">
+      <h2>Un message pour nous ?</h2>
+      <form id="feedback-form">
+        <label for="feedback-name">Votre prénom</label>
+        <input type="text" id="feedback-name" name="name" />
+        <label for="feedback-message">Votre message</label>
+        <textarea id="feedback-message" name="message" required></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p id="feedback-status" role="status"></p>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
