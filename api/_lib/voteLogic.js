@@ -31,6 +31,7 @@ export function computeRankedVoteSummary(entries) {
       name: entry.name,
       paletteKey: entry.paletteKey,
       ranking: entry.ranking,
+      message: entry.message,
       ts: entry.ts,
     });
   }

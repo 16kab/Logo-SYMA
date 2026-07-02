@@ -39,3 +39,12 @@ test('computeRankedVoteSummary returns empty aggregates for no votes', () => {
   assert.equal(summary.logos.logo1.averageRank, null);
   assert.deepEqual(summary.voters, []);
 });
+
+test('computeRankedVoteSummary carries each voter message', () => {
+  const summary = computeRankedVoteSummary([
+    ['v1', { name: 'Alexis', paletteKey: 'palette1', ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 }, message: 'Bravo', ts: 1 }],
+    ['v2', { name: 'Camille', paletteKey: 'palette2', ranking: { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 }, ts: 2 }],
+  ]);
+  assert.equal(summary.voters[0].message, 'Bravo');
+  assert.equal(summary.voters[1].message, undefined);
+});

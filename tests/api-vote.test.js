@@ -21,6 +21,22 @@ test('records a ranked vote with palette choice', async () => {
   });
 });
 
+test('stores an optional message with the vote', async () => {
+  const kv = createFakeKv();
+  const handler = createVoteHandler(kv, () => 12345);
+  await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking, message: '  Superbe travail  ' } }, createMockRes());
+  const stored = await kv.hgetall('votes');
+  assert.deepEqual(stored.v1, { name: 'Alexis', paletteKey: 'palette1', ranking, message: 'Superbe travail', ts: 12345 });
+});
+
+test('omits the message key when no message is provided', async () => {
+  const kv = createFakeKv();
+  const handler = createVoteHandler(kv, () => 12345);
+  await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking, message: '   ' } }, createMockRes());
+  const stored = await kv.hgetall('votes');
+  assert.deepEqual(stored.v1, { name: 'Alexis', paletteKey: 'palette1', ranking, ts: 12345 });
+});
+
 test('replaces an existing ranked vote for the same visitor', async () => {
   const kv = createFakeKv();
   const handler = createVoteHandler(kv, () => 999);
