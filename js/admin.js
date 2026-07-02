@@ -1,6 +1,6 @@
 import { LOGOS } from './logos.js';
 import { PALETTE_KEYS } from './palettes.js';
-import { formatAverageRank, formatPaletteLabel, formatRankingDetail } from './admin-format.js';
+import { formatPaletteLabel, formatRankingDetail } from './admin-format.js';
 
 const TOKEN_STORAGE_KEY = 'syma_admin_token';
 
@@ -43,7 +43,7 @@ async function fetchMessages(token) {
   return response.json();
 }
 
-function renderVotes(votesData) {
+export function renderVotes(votesData) {
   const container = document.getElementById('votes-summary');
   container.innerHTML = '';
 
@@ -58,21 +58,9 @@ function renderVotes(votesData) {
   }
   container.appendChild(paletteBlock);
 
-  const logoBlock = document.createElement('div');
-  logoBlock.className = 'admin-card';
-  logoBlock.innerHTML = '<h3>Classement moyen des logos</h3><ul class="admin-list"></ul>';
-  const logoList = logoBlock.querySelector('.admin-list');
-  for (const logo of LOGOS) {
-    const summary = votesData.logos?.[logo.id] || { averageRank: null, voteCount: 0 };
-    const li = document.createElement('li');
-    li.textContent = `${logo.name} — moyenne ${formatAverageRank(summary.averageRank)} (${summary.voteCount} votes)`;
-    logoList.appendChild(li);
-  }
-  container.appendChild(logoBlock);
-
   const detailBlock = document.createElement('div');
   detailBlock.className = 'admin-card';
-  detailBlock.innerHTML = '<h3>Détails par visiteur</h3><ul class="admin-list"></ul>';
+  detailBlock.innerHTML = '<h3>Votes individuels</h3><ul class="admin-list"></ul>';
   const detailList = detailBlock.querySelector('.admin-list');
   for (const voter of votesData.voters || []) {
     const li = document.createElement('li');

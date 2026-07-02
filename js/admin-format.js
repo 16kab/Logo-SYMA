@@ -4,10 +4,6 @@ export function formatPaletteLabel(paletteKey) {
   return PALETTES[paletteKey]?.label || paletteKey;
 }
 
-export function formatAverageRank(averageRank) {
-  return averageRank === null ? 'n/a' : averageRank.toFixed(2);
-}
-
 export function formatRankingDetail(ranking, logos) {
   return Object.entries(ranking || {})
     .sort((a, b) => a[1] - b[1])

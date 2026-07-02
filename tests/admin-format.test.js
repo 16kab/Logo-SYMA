@@ -1,17 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { formatAverageRank, formatPaletteLabel, formatRankingDetail } from '../js/admin-format.js';
+import { formatPaletteLabel, formatRankingDetail } from '../js/admin-format.js';
 import { LOGOS } from '../js/logos.js';
 
 test('formatPaletteLabel returns readable palette names', () => {
   assert.equal(formatPaletteLabel('palette1'), 'Palette 1');
   assert.equal(formatPaletteLabel('palette2'), 'Palette 2');
   assert.equal(formatPaletteLabel('unknown'), 'unknown');
-});
-
-test('formatAverageRank formats null and numeric averages', () => {
-  assert.equal(formatAverageRank(null), 'n/a');
-  assert.equal(formatAverageRank(1.5), '1.50');
 });
 
 test('formatRankingDetail orders logos by rank', () => {
