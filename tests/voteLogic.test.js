@@ -1,40 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveVoteAction, computeVoteSummary } from '../api/_lib/voteLogic.js';
+import { computeRankedVoteSummary } from '../api/_lib/voteLogic.js';
 
-test('resolveVoteAction sets a new vote when none exists', () => {
-  assert.deepEqual(resolveVoteAction(null, 'up'), { action: 'set', value: 'up' });
+test('computeRankedVoteSummary counts palette choices', () => {
+  const summary = computeRankedVoteSummary([
+    ['v1', { name: 'Alexis', paletteKey: 'palette1', ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 }, ts: 200 }],
+    ['v2', { name: 'Camille', paletteKey: 'palette2', ranking: { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5 }, ts: 100 }],
+    ['v3', { name: 'Dana', paletteKey: 'palette1', ranking: { logo1: 3, logo2: 2, logo3: 1, logo4: 4, logo5: 5 }, ts: 300 }],
+  ]);
+
+  assert.deepEqual(summary.palettes, { palette1: 2, palette2: 1 });
 });
 
-test('resolveVoteAction deletes when clicking the same active vote again', () => {
-  assert.deepEqual(resolveVoteAction({ value: 'up' }, 'up'), { action: 'delete' });
+test('computeRankedVoteSummary aggregates logo rank scores', () => {
+  const summary = computeRankedVoteSummary([
+    ['v1', { name: 'Alexis', paletteKey: 'palette1', ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 }, ts: 200 }],
+    ['v2', { name: 'Camille', paletteKey: 'palette2', ranking: { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5 }, ts: 100 }],
+  ]);
+
+  assert.deepEqual(summary.logos.logo1.rankCounts, { 1: 1, 2: 1, 3: 0, 4: 0, 5: 0 });
+  assert.equal(summary.logos.logo1.score, 3);
+  assert.equal(summary.logos.logo1.averageRank, 1.5);
 });
 
-test('resolveVoteAction replaces an opposite vote', () => {
-  assert.deepEqual(resolveVoteAction({ value: 'up' }, 'down'), { action: 'set', value: 'down' });
-});
+test('computeRankedVoteSummary orders voters chronologically', () => {
+  const summary = computeRankedVoteSummary([
+    ['v1', { name: 'Alexis', paletteKey: 'palette1', ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5 }, ts: 200 }],
+    ['v2', { name: 'Camille', paletteKey: 'palette2', ranking: { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5 }, ts: 100 }],
+  ]);
 
-test('computeVoteSummary counts up and down votes', () => {
-  const entries = [
-    ['v1', { name: 'Alexis', value: 'up', ts: 200 }],
-    ['v2', { name: 'Camille', value: 'down', ts: 100 }],
-    ['v3', { name: 'Dana', value: 'up', ts: 300 }],
-  ];
-  const summary = computeVoteSummary(entries);
-  assert.equal(summary.up, 2);
-  assert.equal(summary.down, 1);
-});
-
-test('computeVoteSummary orders voters chronologically', () => {
-  const entries = [
-    ['v1', { name: 'Alexis', value: 'up', ts: 200 }],
-    ['v2', { name: 'Camille', value: 'down', ts: 100 }],
-  ];
-  const summary = computeVoteSummary(entries);
   assert.deepEqual(summary.voters.map((voter) => voter.name), ['Camille', 'Alexis']);
 });
 
-test('computeVoteSummary returns zero counts for empty entries', () => {
-  const summary = computeVoteSummary([]);
-  assert.deepEqual(summary, { up: 0, down: 0, voters: [] });
+test('computeRankedVoteSummary returns empty aggregates for no votes', () => {
+  const summary = computeRankedVoteSummary([]);
+  assert.deepEqual(summary.palettes, { palette1: 0, palette2: 0 });
+  assert.equal(summary.logos.logo1.score, 0);
+  assert.equal(summary.logos.logo1.averageRank, null);
+  assert.deepEqual(summary.voters, []);
 });

@@ -1,6 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isValidLogoId, isValidVoteValue, sanitizeName, sanitizeMessage } from '../api/_lib/validate.js';
+import {
+  isValidLogoId,
+  isValidPaletteKey,
+  isValidRanking,
+  isValidVoteValue,
+  sanitizeName,
+  sanitizeMessage,
+} from '../api/_lib/validate.js';
 
 test('isValidLogoId accepts known ids and rejects others', () => {
   assert.equal(isValidLogoId('logo1'), true);
@@ -13,6 +20,30 @@ test('isValidVoteValue accepts only up or down', () => {
   assert.equal(isValidVoteValue('up'), true);
   assert.equal(isValidVoteValue('down'), true);
   assert.equal(isValidVoteValue('maybe'), false);
+});
+
+test('isValidPaletteKey accepts known palette keys only', () => {
+  assert.equal(isValidPaletteKey('palette1'), true);
+  assert.equal(isValidPaletteKey('palette2'), true);
+  assert.equal(isValidPaletteKey('palette3'), false);
+  assert.equal(isValidPaletteKey(''), false);
+});
+
+test('isValidRanking accepts a complete one-to-five logo ranking', () => {
+  assert.equal(isValidRanking({
+    logo1: 1,
+    logo2: 2,
+    logo3: 3,
+    logo4: 4,
+    logo5: 5,
+  }), true);
+});
+
+test('isValidRanking rejects missing logos, duplicate ranks, and invalid ranks', () => {
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 1, logo3: 3, logo4: 4, logo5: 5 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 6 }), false);
+  assert.equal(isValidRanking({ logo1: 1, logo2: 2, logo3: 3, logo4: 4, fake: 5 }), false);
 });
 
 test('sanitizeName trims whitespace and defaults to Anonyme', () => {
