@@ -281,8 +281,11 @@
 }
 
 .dev-immersive .ranking-row__preview {
+  flex: none;
   width: 84px;
   height: 56px;
+  min-height: 0;
+  aspect-ratio: auto;
   border-radius: 6px;
   padding: 0.4rem;
 }
