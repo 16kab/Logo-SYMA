@@ -65,7 +65,7 @@
 
 /* Intro / porte d'entrée */
 .dev-immersive .intro {
-  max-width: 62ch;
+  max-width: none;
   margin-bottom: clamp(0.5rem, 2vw, 1.5rem);
 }
 
@@ -73,7 +73,7 @@
   margin: 0.2rem 0 0.9rem;
   color: var(--text);
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-size: clamp(1.9rem, 3.6vw, 3.6rem);
   font-weight: 600;
   line-height: 1.02;
   letter-spacing: -0.025em;
@@ -85,10 +85,16 @@
 
 .dev-immersive .intro-lede {
   margin: 0;
-  max-width: 54ch;
   color: var(--muted);
-  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
   line-height: 1.55;
+}
+
+@media (min-width: 900px) {
+  .dev-immersive .intro-title,
+  .dev-immersive .intro-lede {
+    white-space: nowrap;
+  }
 }
 
 .dev-immersive .votes-section > h2,
