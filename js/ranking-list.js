@@ -2,11 +2,10 @@ import { LOGOS } from './logos.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 import { moveItem } from './ranking-order.js';
 
-const LOGO_BY_ID = Object.fromEntries(LOGOS.map((logo) => [logo.id, logo]));
-
 export function createRankingList(root, { order, onChange, onFirstInteraction } = {}) {
   let currentOrder = [...order];
   let interacted = false;
+  const rowMap = new Map();
 
   root.className = 'ranking-list';
   root.setAttribute('role', 'list');
@@ -17,16 +16,29 @@ export function createRankingList(root, { order, onChange, onFirstInteraction } 
     onFirstInteraction?.();
   }
 
+  // Synchronous: reorders the already-built row nodes and renumbers ranks.
+  // No fetching, no innerHTML reset — appendChild moves existing nodes.
+  function applyOrder() {
+    currentOrder.forEach((id, index) => {
+      const row = rowMap.get(id);
+      if (!row) return;
+      root.appendChild(row);
+      const rankEl = row.querySelector('[data-role="rank"]');
+      if (rankEl) rankEl.textContent = String(index + 1);
+    });
+  }
+
   function commit(newOrder) {
     currentOrder = newOrder;
-    render();
+    applyOrder();
     onChange?.([...currentOrder]);
   }
 
-  async function render() {
-    root.innerHTML = '';
-    for (let index = 0; index < currentOrder.length; index += 1) {
-      const logo = LOGO_BY_ID[currentOrder[index]];
+  // Runs once on init: builds every row's DOM (including the async SVG
+  // fetch + recolor) exactly once, then lays them out via applyOrder().
+  // Subsequent reorders never re-fetch or rebuild — they only move nodes.
+  async function buildRows() {
+    for (const logo of LOGOS) {
       const row = document.createElement('div');
       row.className = 'ranking-row';
       row.setAttribute('role', 'listitem');
@@ -34,17 +46,18 @@ export function createRankingList(root, { order, onChange, onFirstInteraction } 
       row.innerHTML = `
         <button type="button" class="ranking-row__handle" data-role="handle"
           aria-label="Déplacer ${logo.name}" title="Glisser pour classer">⠿</button>
-        <span class="ranking-row__rank" data-role="rank">${index + 1}</span>
+        <span class="ranking-row__rank" data-role="rank"></span>
         <span class="preview-box ranking-row__preview" data-role="preview"></span>
         <span class="ranking-row__name">${logo.name}</span>
       `;
-      root.appendChild(row);
+      rowMap.set(logo.id, row);
 
       const previewEl = row.querySelector('[data-role="preview"]');
       previewEl.style.backgroundColor = '#ffffff';
       const svg = await loadInlineSvg(logo.src, previewEl);
       recolorSvg(svg, '#000000');
     }
+    applyOrder();
   }
 
   function indexOfRow(rowEl) {
@@ -57,6 +70,7 @@ export function createRankingList(root, { order, onChange, onFirstInteraction } 
   root.addEventListener('pointerdown', (event) => {
     const handle = event.target.closest('[data-role="handle"]');
     if (!handle) return;
+    if (drag) return;
     const row = handle.closest('.ranking-row');
     const rows = [...root.querySelectorAll('.ranking-row')];
     const fromIndex = rows.indexOf(row);
@@ -113,15 +127,17 @@ export function createRankingList(root, { order, onChange, onFirstInteraction } 
     const toIndex = fromIndex + (event.key === 'ArrowUp' ? -1 : 1);
     if (toIndex < 0 || toIndex >= currentOrder.length) return;
     notifyFirstInteraction();
+    const movedId = currentOrder[fromIndex];
     commit(moveItem(currentOrder, fromIndex, toIndex));
-    const handles = root.querySelectorAll('[data-role="handle"]');
-    handles[toIndex]?.focus();
+    // Row nodes are never destroyed, so the handle for the moved logo
+    // still exists in the DOM — refocus it now that it has moved.
+    rowMap.get(movedId)?.querySelector('[data-role="handle"]')?.focus();
   });
 
-  render();
+  buildRows();
 
   return {
     getOrder: () => [...currentOrder],
-    setOrder: (nextOrder) => { currentOrder = [...nextOrder]; render(); },
+    setOrder: (nextOrder) => { currentOrder = [...nextOrder]; applyOrder(); },
   };
 }
