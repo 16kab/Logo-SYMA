@@ -17,11 +17,30 @@ export function normalizeRanking(ranking) {
   return Object.fromEntries(LOGOS.map((logo) => [logo.id, Number(ranking[logo.id])]));
 }
 
+export function getRankChoices() {
+  return LOGOS.map((_, index) => index + 1);
+}
+
+export function withRankSelection(ranking, logoId, selectedRank) {
+  const nextRanking = { ...ranking };
+  const previousRank = nextRanking[logoId] || '';
+  const rank = selectedRank ? String(selectedRank) : '';
+  const displacedLogo = LOGOS.find((logo) => logo.id !== logoId && nextRanking[logo.id] === rank);
+
+  nextRanking[logoId] = rank;
+  if (displacedLogo) {
+    nextRanking[displacedLogo.id] = previousRank;
+  }
+
+  return nextRanking;
+}
+
 export function createVotesSection({ colorControlRoot, gridRoot, identityModal }) {
   let paletteKey = PALETTE_KEYS[0];
   let ranking = createEmptyRanking();
   let statusEl = null;
   let submitButton = null;
+  let rankPickerEventsBound = false;
 
   function createPaletteStack(paletteKeyToRender) {
     const stack = document.createElement('span');
@@ -65,15 +84,85 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
     }
   }
 
-  function updateRankOptionAvailability() {
-    const selects = [...gridRoot.querySelectorAll('[data-role="rank"]')];
-    const usedRanks = new Set(selects.map((select) => select.value).filter(Boolean));
+  function renderRankMenu(menuEl, logoId) {
+    const currentRank = ranking[logoId] || '';
+    menuEl.innerHTML = '';
 
-    for (const select of selects) {
-      for (const option of select.options) {
-        option.disabled = Boolean(option.value) && usedRanks.has(option.value) && select.value !== option.value;
-      }
+    for (const rank of getRankChoices()) {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'rank-picker__option';
+      option.classList.toggle('is-active', String(rank) === currentRank);
+      option.dataset.rank = String(rank);
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(String(rank) === currentRank));
+      option.textContent = `Rang ${rank}`;
+      menuEl.appendChild(option);
     }
+  }
+
+  function closeRankPickers(exceptPicker = null) {
+    for (const picker of gridRoot.querySelectorAll('[data-role="rank-picker"]')) {
+      if (picker === exceptPicker) continue;
+      const trigger = picker.querySelector('[data-role="rank-trigger"]');
+      const menu = picker.querySelector('[data-role="rank-menu"]');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      if (menu) menu.hidden = true;
+    }
+  }
+
+  function updateRankPickers() {
+    for (const picker of gridRoot.querySelectorAll('[data-role="rank-picker"]')) {
+      const logoId = picker.dataset.logoId;
+      const rank = ranking[logoId] || '';
+      const label = picker.querySelector('[data-role="rank-label"]');
+      const trigger = picker.querySelector('[data-role="rank-trigger"]');
+      const menu = picker.querySelector('[data-role="rank-menu"]');
+
+      if (label) label.textContent = rank ? `Rang ${rank}` : 'Rang';
+      if (trigger) trigger.classList.toggle('is-selected', Boolean(rank));
+      if (menu) renderRankMenu(menu, logoId);
+    }
+  }
+
+  function bindRankPickerEvents() {
+    if (rankPickerEventsBound) return;
+
+    gridRoot.addEventListener('click', (event) => {
+      const trigger = event.target.closest?.('[data-role="rank-trigger"]');
+      const option = event.target.closest?.('[data-rank]');
+
+      if (trigger) {
+        const picker = trigger.closest('[data-role="rank-picker"]');
+        const menu = picker.querySelector('[data-role="rank-menu"]');
+        const isOpen = !menu.hidden;
+
+        closeRankPickers(isOpen ? null : picker);
+        menu.hidden = isOpen;
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+        if (!isOpen) renderRankMenu(menu, picker.dataset.logoId);
+        return;
+      }
+
+      if (option) {
+        const picker = option.closest('[data-role="rank-picker"]');
+        ranking = withRankSelection(ranking, picker.dataset.logoId, option.dataset.rank);
+        statusEl.textContent = '';
+        closeRankPickers();
+        updateRankPickers();
+        return;
+      }
+
+      if (!event.target.closest?.('[data-role="rank-picker"]')) {
+        closeRankPickers();
+      }
+    });
+
+    gridRoot.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeRankPickers();
+    });
+
+    rankPickerEventsBound = true;
   }
 
   async function renderRankingGrid() {
@@ -95,13 +184,21 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
       card.className = 'ranking-card';
       card.innerHTML = `
         <div class="preview-box ranking-preview" data-role="preview"></div>
-        <label>
+        <div class="rank-field">
           <span>${logo.name}</span>
-          <select data-role="rank" data-logo-id="${logo.id}">
-            <option value="">Rang</option>
-            ${LOGOS.map((_, index) => `<option value="${index + 1}">${index + 1}</option>`).join('')}
-          </select>
-        </label>
+          <div class="rank-picker" data-role="rank-picker" data-logo-id="${logo.id}">
+            <button
+              type="button"
+              class="rank-picker__trigger"
+              data-role="rank-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span data-role="rank-label">Rang</span>
+            </button>
+            <div class="rank-picker__menu" data-role="rank-menu" role="listbox" hidden></div>
+          </div>
+        </div>
       `;
       list.appendChild(card);
 
@@ -111,16 +208,8 @@ export function createVotesSection({ colorControlRoot, gridRoot, identityModal }
       recolorSvg(svg, '#000000');
     }
 
-    for (const select of gridRoot.querySelectorAll('[data-role="rank"]')) {
-      select.value = ranking[select.dataset.logoId] || '';
-      select.addEventListener('change', () => {
-        ranking = { ...ranking, [select.dataset.logoId]: select.value };
-        statusEl.textContent = '';
-        updateRankOptionAvailability();
-      });
-    }
-
-    updateRankOptionAvailability();
+    bindRankPickerEvents();
+    updateRankPickers();
     submitButton.addEventListener('click', submitVote);
   }
 

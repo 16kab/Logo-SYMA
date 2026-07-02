@@ -30,3 +30,7 @@ test('feedback form spans the full content width', () => {
   assert.match(block, /width:\s*100%/);
   assert.doesNotMatch(block, /max-width:\s*640px/);
 });
+
+test('base stylesheet avoids decorative gradients', () => {
+  assert.doesNotMatch(css, /(linear|radial)-gradient/);
+});

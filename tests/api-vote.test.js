@@ -4,7 +4,7 @@ import { createVoteHandler } from '../api/vote.js';
 import { createFakeKv } from './helpers/fakeKv.js';
 import { createMockRes } from './helpers/http.js';
 
-const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6 };
+const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 };
 
 test('records a ranked vote with palette choice', async () => {
   const kv = createFakeKv();
@@ -25,7 +25,7 @@ test('replaces an existing ranked vote for the same visitor', async () => {
   const kv = createFakeKv();
   const handler = createVoteHandler(kv, () => 999);
   await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking } }, createMockRes());
-  const nextRanking = { logo1: 6, logo2: 5, logo3: 4, logo4: 3, logo5: 2, logo6: 1 };
+  const nextRanking = { logo1: 7, logo2: 6, logo3: 5, logo4: 4, logo5: 3, logo6: 2, logo7: 1 };
   const res = createMockRes();
 
   await handler({ method: 'POST', body: { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette2', ranking: nextRanking } }, res);
@@ -42,7 +42,7 @@ test('rejects invalid ranked vote payloads', async () => {
   for (const body of [
     { visitorId: '', name: 'Alexis', paletteKey: 'palette1', ranking },
     { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette9', ranking },
-    { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking: { ...ranking, logo6: 5 } },
+    { visitorId: 'v1', name: 'Alexis', paletteKey: 'palette1', ranking: { ...ranking, logo7: 6 } },
   ]) {
     const res = createMockRes();
     await handler({ method: 'POST', body }, res);

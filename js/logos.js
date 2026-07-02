@@ -5,6 +5,7 @@ export const LOGOS = [
   { id: 'logo4', name: 'Logo 4', src: 'SVG/le beau.svg' },
   { id: 'logo5', name: 'Logo 5', src: 'SVG/manuscrit.svg' },
   { id: 'logo6', name: 'Logo 6', src: 'SVG/Vertical.svg' },
+  { id: 'logo7', name: 'Logo 7', src: 'SVG/Logo fluid.svg' },
 ];
 
 export const LOGO_IDS = LOGOS.map((logo) => logo.id);

@@ -6,7 +6,7 @@ import { createFakeKv } from './helpers/fakeKv.js';
 import { createMockRes } from './helpers/http.js';
 import { computeAdminToken } from '../api/_lib/adminAuth.js';
 
-const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6 };
+const ranking = { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 };
 
 async function seedVote(kv, visitorId, name, paletteKey, visitorRanking = ranking) {
   const voteHandler = createVoteHandler(kv, () => (visitorId === 'v1' ? 100 : 200));
@@ -16,7 +16,7 @@ async function seedVote(kv, visitorId, name, paletteKey, visitorRanking = rankin
 test('returns public aggregate palette and ranking results', async () => {
   const kv = createFakeKv();
   await seedVote(kv, 'v1', 'Alexis', 'palette1');
-  await seedVote(kv, 'v2', 'Camille', 'palette2', { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5, logo6: 6 });
+  await seedVote(kv, 'v2', 'Camille', 'palette2', { logo1: 2, logo2: 1, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 });
   const handler = createVotesHandler(kv, () => 'secret');
   const res = createMockRes();
 

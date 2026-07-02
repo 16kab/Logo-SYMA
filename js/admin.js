@@ -1,5 +1,5 @@
 import { LOGOS } from './logos.js';
-import { PALETTE_KEYS } from './palettes.js';
+import { PALETTES, PALETTE_KEYS } from './palettes.js';
 import { formatPaletteLabel } from './admin-format.js';
 
 const TOKEN_STORAGE_KEY = 'syma_admin_token';
@@ -66,65 +66,180 @@ function getRankedLogoSummaries(votesData) {
   });
 }
 
+function getVoterLogoRanking(ranking) {
+  return LOGOS.map((logo, index) => ({
+    logo,
+    index,
+    rank: Number(ranking?.[logo.id]),
+  })).sort((a, b) => {
+    const aRank = Number.isInteger(a.rank) ? a.rank : Number.POSITIVE_INFINITY;
+    const bRank = Number.isInteger(b.rank) ? b.rank : Number.POSITIVE_INFINITY;
+    return aRank - bRank || a.index - b.index;
+  });
+}
+
+function createPalettePreview(paletteKey) {
+  const preview = document.createElement('span');
+  preview.className = 'admin-palette-preview';
+  preview.setAttribute('aria-hidden', 'true');
+
+  for (const color of PALETTES[paletteKey]?.colors || []) {
+    const swatch = document.createElement('span');
+    swatch.className = 'admin-palette-preview__swatch';
+    swatch.style.backgroundColor = color;
+    preview.appendChild(swatch);
+  }
+
+  return preview;
+}
+
+function createPaletteCard(paletteKey, count) {
+  const item = document.createElement('li');
+  item.className = 'admin-palette-card';
+
+  const label = document.createElement('p');
+  label.className = 'admin-palette-card__label';
+  label.textContent = formatPaletteLabel(paletteKey);
+
+  const meta = document.createElement('p');
+  meta.className = 'admin-palette-card__meta';
+  meta.textContent = formatVoteCount(count);
+
+  const text = document.createElement('div');
+  text.appendChild(label);
+  text.appendChild(meta);
+
+  item.appendChild(createPalettePreview(paletteKey));
+  item.appendChild(text);
+
+  return item;
+}
+
+function createLogoRankingItem({ logo, badgeText, metaText }) {
+  const item = document.createElement('article');
+  item.className = 'admin-logo-ranking__item';
+  item.setAttribute('data-logo-id', logo.id);
+
+  const visual = document.createElement('div');
+  visual.className = 'admin-logo-ranking__visual';
+
+  const badge = document.createElement('span');
+  badge.className = 'admin-logo-ranking__rank';
+  badge.textContent = badgeText;
+
+  const image = document.createElement('img');
+  image.className = 'admin-logo-ranking__image';
+  image.src = logo.src;
+  image.alt = logo.name;
+  image.loading = 'lazy';
+
+  visual.appendChild(badge);
+  visual.appendChild(image);
+
+  const name = document.createElement('p');
+  name.className = 'admin-logo-ranking__name';
+  name.textContent = logo.name;
+
+  const meta = document.createElement('p');
+  meta.className = 'admin-logo-ranking__meta';
+  meta.textContent = metaText;
+
+  item.appendChild(visual);
+  item.appendChild(name);
+  item.appendChild(meta);
+
+  return item;
+}
+
+function createLogoRankingList(className) {
+  const rankingGrid = document.createElement('div');
+  rankingGrid.className = `admin-logo-ranking admin-logo-ranking--single-line ${className}`;
+  return rankingGrid;
+}
+
 export function renderVotes(votesData) {
   const container = document.getElementById('votes-summary');
   container.innerHTML = '';
 
   const paletteBlock = document.createElement('div');
   paletteBlock.className = 'admin-card';
-  paletteBlock.innerHTML = '<h3>Palettes préférées</h3><ul class="admin-list"></ul>';
-  const paletteList = paletteBlock.querySelector('.admin-list');
+  paletteBlock.innerHTML = '<h3>Palettes préférées</h3>';
+  const paletteList = document.createElement('ul');
+  paletteList.className = 'admin-list admin-palette-list';
   for (const key of PALETTE_KEYS) {
-    const li = document.createElement('li');
-    li.textContent = `${formatPaletteLabel(key)} — ${votesData.palettes?.[key] || 0}`;
-    paletteList.appendChild(li);
+    paletteList.appendChild(createPaletteCard(key, votesData.palettes?.[key] || 0));
   }
+  paletteBlock.appendChild(paletteList);
   container.appendChild(paletteBlock);
 
   const rankingBlock = document.createElement('div');
   rankingBlock.className = 'admin-card';
   rankingBlock.innerHTML = '<h3>Classement des logos</h3>';
 
-  const rankingGrid = document.createElement('div');
-  rankingGrid.className = 'admin-logo-ranking';
+  const rankingGrid = createLogoRankingList('admin-logo-ranking--average');
 
   getRankedLogoSummaries(votesData).forEach(({ logo, summary }, index) => {
-    const item = document.createElement('article');
-    item.className = 'admin-logo-ranking__item';
-    item.setAttribute('data-logo-id', logo.id);
-
-    const visual = document.createElement('div');
-    visual.className = 'admin-logo-ranking__visual';
-
-    const badge = document.createElement('span');
-    badge.className = 'admin-logo-ranking__rank';
-    badge.textContent = `#${index + 1}`;
-
-    const image = document.createElement('img');
-    image.className = 'admin-logo-ranking__image';
-    image.src = logo.src;
-    image.alt = logo.name;
-    image.loading = 'lazy';
-
-    visual.appendChild(badge);
-    visual.appendChild(image);
-
-    const name = document.createElement('p');
-    name.className = 'admin-logo-ranking__name';
-    name.textContent = logo.name;
-
-    const meta = document.createElement('p');
-    meta.className = 'admin-logo-ranking__meta';
-    meta.textContent = `Moyenne ${formatAverageRank(summary.averageRank)} — ${formatVoteCount(summary.voteCount || 0)}`;
-
-    item.appendChild(visual);
-    item.appendChild(name);
-    item.appendChild(meta);
-    rankingGrid.appendChild(item);
+    rankingGrid.appendChild(createLogoRankingItem({
+      logo,
+      badgeText: `#${index + 1}`,
+      metaText: `Moyenne ${formatAverageRank(summary.averageRank)} — ${formatVoteCount(summary.voteCount || 0)}`,
+    }));
   });
 
   rankingBlock.appendChild(rankingGrid);
   container.appendChild(rankingBlock);
+
+  const voterBlock = document.createElement('div');
+  voterBlock.className = 'admin-card';
+  voterBlock.innerHTML = '<h3>Votes par personne</h3>';
+
+  const voterList = document.createElement('div');
+  voterList.className = 'admin-voter-list';
+
+  for (const voter of votesData.voters || []) {
+    const voterCard = document.createElement('article');
+    voterCard.className = 'admin-voter-card';
+
+    const header = document.createElement('div');
+    header.className = 'admin-voter-card__header';
+
+    const name = document.createElement('p');
+    name.className = 'admin-voter-card__name';
+    name.textContent = voter.name || 'Anonyme';
+
+    const palette = document.createElement('div');
+    palette.className = 'admin-voter-card__palette';
+    const paletteLabel = document.createElement('span');
+    paletteLabel.textContent = formatPaletteLabel(voter.paletteKey);
+    palette.appendChild(createPalettePreview(voter.paletteKey));
+    palette.appendChild(paletteLabel);
+
+    header.appendChild(name);
+    header.appendChild(palette);
+    voterCard.appendChild(header);
+
+    const voterRanking = createLogoRankingList('admin-logo-ranking--person');
+    for (const entry of getVoterLogoRanking(voter.ranking)) {
+      voterRanking.appendChild(createLogoRankingItem({
+        logo: entry.logo,
+        badgeText: Number.isInteger(entry.rank) ? `#${entry.rank}` : '#-',
+        metaText: Number.isInteger(entry.rank) ? `Rang ${entry.rank}` : 'Non classé',
+      }));
+    }
+
+    voterCard.appendChild(voterRanking);
+    voterList.appendChild(voterCard);
+  }
+
+  if (!voterList.children.length) {
+    const empty = document.createElement('p');
+    empty.className = 'admin-empty';
+    empty.textContent = 'Aucun vote enregistré.';
+    voterList.appendChild(empty);
+  }
+
+  voterBlock.appendChild(voterList);
+  container.appendChild(voterBlock);
 }
 
 function renderMessages(messages) {

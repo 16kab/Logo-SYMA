@@ -67,12 +67,14 @@ test('renderLogoThumbs shows logo images instead of visible logo numbers', () =>
 
     renderLogoThumbs(container, 'logo2', () => {});
 
-    assert.equal(container.children.length, 6);
+    assert.equal(container.children.length, 7);
     assert.equal(container.children[0].textContent, '');
     assert.equal(container.children[0].getAttribute('aria-label'), 'Choisir Logo 1');
     assert.equal(container.children[0].children[0].src, 'SVG/FAT.svg');
     assert.equal(container.children[0].children[0].alt, '');
     assert.equal(container.children[0].children[0].getAttribute('aria-hidden'), 'true');
     assert.equal(container.children[1].getAttribute('aria-pressed'), 'true');
+    assert.equal(container.children[6].getAttribute('aria-label'), 'Choisir Logo 7');
+    assert.equal(container.children[6].children[0].src, 'SVG/Logo fluid.svg');
   });
 });

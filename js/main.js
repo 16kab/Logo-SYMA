@@ -2,8 +2,11 @@ import { createComparatorPanel } from './comparator-panel.js';
 import { createVotesSection } from './votes-section.js';
 import { createFeedbackForm } from './feedback-form.js';
 import { createIdentityModal } from './identity-modal.js';
+import { activateDevTheme } from './dev-theme.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  activateDevTheme();
+
   const identityModal = createIdentityModal(document.getElementById('identity-modal-root'));
 
   createComparatorPanel(document.getElementById('panel-left'), {

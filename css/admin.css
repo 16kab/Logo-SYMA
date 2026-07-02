@@ -1,5 +1,5 @@
 .admin-main {
-  width: min(100%, 1180px);
+  width: min(100%, 1440px);
 }
 
 #login-form {
@@ -62,10 +62,60 @@
   gap: 0.5rem;
 }
 
+.admin-palette-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-palette-card {
+  border: 1px solid var(--border, #d9ddd6);
+  border-radius: var(--radius, 8px);
+  background: var(--surface-soft, #f8f7f2);
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.admin-palette-preview {
+  display: flex;
+  align-items: center;
+  padding-left: 0.28rem;
+  flex: 0 0 auto;
+}
+
+.admin-palette-preview__swatch {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border, #d9ddd6);
+  border-radius: 999px;
+  margin-left: -0.28rem;
+  box-shadow: 0 4px 10px rgba(17, 17, 17, 0.12);
+}
+
+.admin-palette-card__label,
+.admin-palette-card__meta {
+  margin: 0;
+}
+
+.admin-palette-card__label {
+  font-weight: 750;
+}
+
+.admin-palette-card__meta {
+  color: var(--muted, #63645f);
+  font-size: 0.9rem;
+}
+
 .admin-logo-ranking {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+}
+
+.admin-logo-ranking--single-line {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(128px, 1fr);
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
 }
 
 .admin-logo-ranking__item {
@@ -77,9 +127,13 @@
   gap: 0.65rem;
 }
 
+.admin-logo-ranking--single-line .admin-logo-ranking__item {
+  min-width: 0;
+}
+
 .admin-logo-ranking__visual {
   position: relative;
-  min-height: 190px;
+  min-height: 104px;
   border: 1px solid var(--border, #d9ddd6);
   border-radius: var(--radius, 8px);
   background: #ffffff;
@@ -106,7 +160,7 @@
 .admin-logo-ranking__image {
   display: block;
   max-width: 92%;
-  max-height: 150px;
+  max-height: 78px;
   object-fit: contain;
   filter: brightness(0);
 }
@@ -123,6 +177,45 @@
 .admin-logo-ranking__meta {
   color: var(--muted, #63645f);
   font-size: 0.92rem;
+}
+
+.admin-voter-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-voter-card {
+  border: 1px solid var(--border, #d9ddd6);
+  border-radius: var(--radius, 8px);
+  background: var(--surface-soft, #f8f7f2);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-voter-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-voter-card__name {
+  margin: 0;
+  font-weight: 800;
+}
+
+.admin-voter-card__palette {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--muted, #63645f);
+  font-weight: 700;
+}
+
+.admin-empty {
+  margin: 0;
+  color: var(--muted, #63645f);
 }
 
 #messages-list {

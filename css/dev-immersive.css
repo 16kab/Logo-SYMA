@@ -1,0 +1,279 @@
+.dev-immersive {
+  --page: #0b0d10;
+  --surface: rgba(239, 243, 249, 0.92);
+  --surface-soft: rgba(232, 237, 246, 0.78);
+  --text: #f3f6fb;
+  --ink: #101319;
+  --muted: #aeb6c5;
+  --border: rgba(202, 211, 225, 0.22);
+  --border-strong: #cbd3df;
+  --accent: #b8c2d6;
+  --success: #9fb29c;
+  --danger: #d77d72;
+  --radius: 8px;
+  --shadow: 0 34px 100px rgba(0, 0, 0, 0.44);
+  --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.28);
+  min-height: 100vh;
+  color: var(--text);
+  background: #0b0d10;
+}
+
+.dev-immersive::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.dev-immersive .site-header {
+  width: min(100%, 1680px);
+  padding-top: 1.5rem;
+}
+
+.dev-immersive .site-header h1 {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.dev-immersive main {
+  width: min(100%, 1680px);
+  padding-top: 1.8rem;
+  gap: clamp(3rem, 6vw, 6rem);
+}
+
+.dev-immersive .section-heading {
+  margin-bottom: 1.4rem;
+}
+
+.dev-immersive .section-heading h2,
+.dev-immersive .votes-section h2,
+.dev-immersive .feedback-section h2,
+.dev-immersive .vote-step h2,
+.dev-immersive .ranking-header h2 {
+  max-width: none;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 2.6vw, 3.25rem);
+  font-weight: 520;
+  line-height: 1.05;
+}
+
+.dev-immersive .votes-section > h2,
+.dev-immersive .feedback-section > h2 {
+  max-width: none;
+}
+
+.dev-immersive .eyebrow {
+  color: var(--accent);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+
+.dev-immersive .comparator {
+  gap: clamp(1.2rem, 2.4vw, 2.4rem);
+}
+
+.dev-immersive .comparator-panel,
+.dev-immersive .votes-color-control,
+.dev-immersive .votes-grid,
+.dev-immersive #feedback-form {
+  border-color: var(--border);
+  background: rgba(16, 19, 24, 0.88);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px);
+}
+
+.dev-immersive .comparator-panel {
+  padding: clamp(0.8rem, 1.3vw, 1.35rem);
+}
+
+.dev-immersive .preview-box {
+  min-height: clamp(360px, 37vw, 640px);
+  border: 1px solid rgba(203, 211, 223, 0.2);
+  background: #f7f9fc;
+  box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.05);
+}
+
+.dev-immersive .panel-controls {
+  padding-top: 0.9rem;
+  gap: 0.72rem;
+}
+
+.dev-immersive .control-label {
+  color: var(--accent);
+}
+
+.dev-immersive .thumb-button,
+.dev-immersive .palette-tab,
+.dev-immersive .swatch {
+  border-color: rgba(203, 211, 223, 0.24);
+  background: rgba(239, 243, 249, 0.08);
+  color: var(--text);
+}
+
+.dev-immersive .thumb-button {
+  width: 62px;
+  height: 42px;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.dev-immersive .thumb-button__image {
+  filter: brightness(0);
+  opacity: 0.88;
+}
+
+.dev-immersive .thumb-button.is-active,
+.dev-immersive .palette-tab.is-active,
+.dev-immersive .swatch.is-active {
+  border-color: var(--accent);
+  background: rgba(184, 194, 214, 0.18);
+  color: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(184, 194, 214, 0.6), 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.dev-immersive .votes-section,
+.dev-immersive .feedback-section {
+  gap: 1.3rem;
+}
+
+.dev-immersive .vote-palette-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.dev-immersive .vote-palette-card {
+  min-height: 190px;
+  border-color: rgba(203, 211, 223, 0.22);
+  background: rgba(16, 19, 24, 0.9);
+  color: var(--text);
+  padding: clamp(1rem, 1.8vw, 1.6rem);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.dev-immersive .vote-palette-card:hover,
+.dev-immersive .vote-palette-card.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+}
+
+.dev-immersive .vote-palette-card__label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2vw, 2rem);
+  font-weight: 520;
+}
+
+.dev-immersive .palette-stack__swatch {
+  width: clamp(58px, 6vw, 86px);
+  height: clamp(58px, 6vw, 86px);
+  border-color: rgba(248, 250, 252, 0.26);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.26);
+  margin-left: -0.65rem;
+}
+
+.dev-immersive .ranking-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+}
+
+.dev-immersive .ranking-card {
+  border-color: rgba(203, 211, 223, 0.22);
+  background: rgba(12, 15, 20, 0.9);
+  padding: 1rem;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26);
+}
+
+.dev-immersive .ranking-preview {
+  min-height: clamp(260px, 23vw, 420px);
+  border-color: rgba(16, 19, 24, 0.1);
+  background: #ffffff;
+  padding: clamp(1.2rem, 2vw, 2rem);
+}
+
+.dev-immersive .ranking-card label,
+.dev-immersive .rank-field {
+  color: var(--text);
+}
+
+.dev-immersive .rank-picker {
+  position: relative;
+}
+
+.dev-immersive .rank-picker__trigger {
+  min-height: 52px;
+  border-color: rgba(203, 211, 223, 0.3);
+  background: rgba(239, 243, 249, 0.09);
+  color: var(--text);
+  padding-inline: 0.9rem;
+}
+
+.dev-immersive .rank-picker__trigger:hover,
+.dev-immersive .rank-picker__trigger.is-selected {
+  border-color: var(--accent);
+  background: rgba(184, 194, 214, 0.16);
+}
+
+.dev-immersive .rank-picker__menu {
+  border-color: var(--accent);
+  background: #f6f8fc;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.dev-immersive .rank-picker__option {
+  border-color: rgba(16, 19, 24, 0.1);
+  background: transparent;
+  color: var(--ink);
+}
+
+.dev-immersive .rank-picker__option:hover,
+.dev-immersive .rank-picker__option.is-active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #f8fafc;
+}
+
+.dev-immersive #feedback-form input,
+.dev-immersive #feedback-form textarea {
+  min-height: 52px;
+  border-color: rgba(203, 211, 223, 0.3);
+  background-color: rgba(239, 243, 249, 0.09);
+  color: var(--text);
+}
+
+.dev-immersive .primary-action,
+.dev-immersive #feedback-form button,
+.dev-immersive .identity-modal__form button {
+  min-height: 56px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.dev-immersive .primary-action:hover,
+.dev-immersive #feedback-form button:hover,
+.dev-immersive .identity-modal__form button:hover {
+  background: #edf1f7;
+  color: var(--ink);
+}
+
+.dev-immersive #feedback-form label,
+.dev-immersive .ranking-header p,
+.dev-immersive .form-status,
+.dev-immersive #feedback-status {
+  color: var(--muted);
+}
+
+.dev-immersive #feedback-form textarea {
+  min-height: 190px;
+}
+
+.dev-immersive .identity-modal__panel {
+  border-color: var(--border);
+  background: #111418;
+  color: var(--text);
+}
