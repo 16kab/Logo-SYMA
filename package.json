@@ -6,5 +6,8 @@
   "scripts": {
     "test": "node --test tests/",
     "dev": "node dev-server.js"
+  },
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
   }
 }
