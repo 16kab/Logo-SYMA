@@ -18,10 +18,13 @@
 
 ## 3. Ajouter le stockage (Upstash Redis)
 
-Vercel KV est déprécié — le stockage passe désormais par une intégration Marketplace Upstash Redis.
+Vercel KV est déprécié — le stockage passe désormais par Upstash Redis. Upstash a un vrai plan gratuit (500 000 commandes/mois, sans carte bancaire), mais le flux d'intégration **Marketplace** de Vercel demande parfois une méthode de paiement même pour l'activer (juste pour autoriser une éventuelle facturation si tu dépasses le gratuit). Pour l'éviter, crée la base directement sur Upstash et relie-la manuellement :
 
-1. Dans le projet Vercel, onglet **Storage** → **Marketplace Database Integrations** → rechercher "Redis" → choisir **Upstash**.
-2. Suivre le flux de connexion pour lier la base au projet : l'intégration ajoute automatiquement les variables d'environnement `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` à tous les environnements (Production/Preview/Development).
+1. Créer un compte sur [upstash.com](https://upstash.com) (gratuit, sans carte requise) et créer une base **Redis**.
+2. Dans le dashboard Upstash, ouvrir la base → onglet **Details** → section **REST API** → copier les deux valeurs `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN`.
+3. Dans le projet Vercel, **Settings → Environment Variables**, ajouter ces deux variables avec les valeurs copiées, pour les environnements Production et Preview.
+
+(Si tu préfères passer par le Marketplace Vercel — Storage → Marketplace Database Integrations → Upstash — ça fonctionne aussi et ajoute les mêmes variables automatiquement, mais peut demander une carte selon l'état actuel du flux Vercel.)
 
 ## 4. Définir le mot de passe admin
 
