@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getIdentity, setName, ensureIdentity } from '../js/identity.js';
+import { ensureIdentityId, getIdentity, setName, ensureIdentity } from '../js/identity.js';
 
 function createFakeStorage(initial = {}) {
   const data = { ...initial };
@@ -64,5 +64,17 @@ test('ensureIdentity leaves name null if the prompt is cancelled', () => {
     promptForName: () => null,
   });
   assert.equal(identity.name, null);
+  assert.equal(storage.getItem('syma_visitor_name'), null);
+});
+
+test('ensureIdentityId generates an id without prompting for a name', () => {
+  const storage = createFakeStorage();
+  const id = ensureIdentityId({
+    storage,
+    generateId: () => 'id-only',
+  });
+
+  assert.equal(id, 'id-only');
+  assert.equal(storage.getItem('syma_visitor_id'), 'id-only');
   assert.equal(storage.getItem('syma_visitor_name'), null);
 });

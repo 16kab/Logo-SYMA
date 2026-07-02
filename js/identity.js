@@ -12,6 +12,20 @@ export function setName(name, storage = globalThis.localStorage) {
   storage.setItem(STORAGE_KEY_NAME, name);
 }
 
+export function ensureIdentityId({
+  storage = globalThis.localStorage,
+  generateId = () => globalThis.crypto.randomUUID(),
+} = {}) {
+  let { id } = getIdentity(storage);
+
+  if (!id) {
+    id = generateId();
+    storage.setItem(STORAGE_KEY_ID, id);
+  }
+
+  return id;
+}
+
 export function ensureIdentity({
   storage = globalThis.localStorage,
   generateId = () => globalThis.crypto.randomUUID(),
