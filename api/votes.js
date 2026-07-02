@@ -12,12 +12,23 @@ export function createVotesHandler(kv, getAdminPassword = () => process.env.ADMI
 
     const token = extractBearerToken(req.headers && req.headers.authorization);
     const isAdmin = isAuthorizedToken(token, getAdminPassword());
+    const requestUrl = new URL(req.url || '/', 'http://localhost');
+    const visitorId = requestUrl.searchParams.get('visitorId');
 
     const result = {};
     for (const logoId of LOGO_IDS) {
       const hash = (await kv.hgetall(`vote:${logoId}`)) || {};
       const summary = computeVoteSummary(Object.entries(hash));
-      result[logoId] = isAdmin ? summary : { up: summary.up, down: summary.down };
+      if (isAdmin) {
+        result[logoId] = summary;
+      } else {
+        const entry = { up: summary.up, down: summary.down };
+        if (visitorId) {
+          const myVoter = summary.voters.find((voter) => voter.visitorId === visitorId);
+          entry.myVote = myVoter ? myVoter.value : null;
+        }
+        result[logoId] = entry;
+      }
     }
 
     res.status(200).json(result);

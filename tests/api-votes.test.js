@@ -48,3 +48,14 @@ test('rejects non-GET methods', async () => {
   await handler({ method: 'POST', headers: {} }, res);
   assert.equal(res.statusCode, 405);
 });
+
+test('includes the requesting visitor own vote value when visitorId is provided', async () => {
+  const kv = createFakeKv();
+  await seedVote(kv, 'logo1', 'v1', 'Alexis', 'up');
+  await seedVote(kv, 'logo1', 'v2', 'Camille', 'down');
+  const handler = createVotesHandler(kv, () => 'secret');
+  const res = createMockRes();
+  await handler({ method: 'GET', headers: {}, url: '/api/votes?visitorId=v2' }, res);
+  assert.equal(res.body.logo1.myVote, 'down');
+  assert.equal(res.body.logo2.myVote, null);
+});

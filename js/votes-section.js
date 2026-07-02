@@ -2,7 +2,7 @@ import { LOGOS } from './logos.js';
 import { initialState, withPaletteChange, withBgColor, withLogoColor } from './comparator-state.js';
 import { renderPaletteTabs, renderSwatches } from './palette-controls.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
-import { ensureIdentity } from './identity.js';
+import { ensureIdentity, getIdentity } from './identity.js';
 
 export function createVotesSection({ colorControlRoot, gridRoot }) {
   let colorState = initialState('palette1', LOGOS[0].id);
@@ -86,11 +86,16 @@ export function createVotesSection({ colorControlRoot, gridRoot }) {
 
   async function refreshCounts() {
     try {
-      const response = await fetch('/api/votes');
+      const { id } = getIdentity();
+      const url = id ? `/api/votes?visitorId=${encodeURIComponent(id)}` : '/api/votes';
+      const response = await fetch(url);
       const data = await response.json();
       for (const [logoId, card] of cards.entries()) {
         const counts = data[logoId] || { up: 0, down: 0 };
         card.countsEl.textContent = `👍 ${counts.up} · 👎 ${counts.down}`;
+        if (id && 'myVote' in counts) {
+          myVotes[logoId] = counts.myVote || undefined;
+        }
       }
     } catch (error) {
       console.error(error);
@@ -128,8 +133,8 @@ export function createVotesSection({ colorControlRoot, gridRoot }) {
       cards.set(logo.id, { previewEl, svgElement, upButton, downButton, countsEl });
     }
 
-    updateButtonStates();
     await refreshCounts();
+    updateButtonStates();
   }
 
   renderColorControl();
