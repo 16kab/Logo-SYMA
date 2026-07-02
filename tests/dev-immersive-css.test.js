@@ -11,6 +11,11 @@ test('index loads the dev-only immersive stylesheet after the base stylesheet', 
   assert.ok(index.indexOf('css/style.css') < index.indexOf('css/dev-immersive.css'));
 });
 
+test('index enables the immersive dark theme by default', () => {
+  assert.match(index, /<body[^>]*class="dev-immersive"/);
+  assert.match(index, /data-experience="immersive-gallery"/);
+});
+
 test('dev immersive stylesheet is scoped to the local theme class', () => {
   assert.match(css, /\.dev-immersive\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.comparator-panel/);
