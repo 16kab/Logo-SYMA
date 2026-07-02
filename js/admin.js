@@ -1,6 +1,6 @@
 import { LOGOS } from './logos.js';
 import { PALETTE_KEYS } from './palettes.js';
-import { formatPaletteLabel, formatRankingDetail } from './admin-format.js';
+import { formatPaletteLabel } from './admin-format.js';
 
 const TOKEN_STORAGE_KEY = 'syma_admin_token';
 
@@ -43,6 +43,29 @@ async function fetchMessages(token) {
   return response.json();
 }
 
+function getSortableAverage(summary) {
+  return Number.isFinite(summary?.averageRank) ? summary.averageRank : Number.POSITIVE_INFINITY;
+}
+
+function formatAverageRank(averageRank) {
+  return Number.isFinite(averageRank) ? averageRank.toFixed(2) : 'n/a';
+}
+
+function formatVoteCount(voteCount) {
+  return `${voteCount} vote${voteCount > 1 ? 's' : ''}`;
+}
+
+function getRankedLogoSummaries(votesData) {
+  return LOGOS.map((logo, index) => ({
+    logo,
+    index,
+    summary: votesData.logos?.[logo.id] || { averageRank: null, voteCount: 0 },
+  })).sort((a, b) => {
+    const averageDelta = getSortableAverage(a.summary) - getSortableAverage(b.summary);
+    return averageDelta || a.index - b.index;
+  });
+}
+
 export function renderVotes(votesData) {
   const container = document.getElementById('votes-summary');
   container.innerHTML = '';
@@ -58,22 +81,50 @@ export function renderVotes(votesData) {
   }
   container.appendChild(paletteBlock);
 
-  const detailBlock = document.createElement('div');
-  detailBlock.className = 'admin-card';
-  detailBlock.innerHTML = '<h3>Votes individuels</h3><ul class="admin-list"></ul>';
-  const detailList = detailBlock.querySelector('.admin-list');
-  for (const voter of votesData.voters || []) {
-    const li = document.createElement('li');
-    const date = new Date(voter.ts).toLocaleString('fr-FR');
-    li.textContent = `${voter.name} — ${formatPaletteLabel(voter.paletteKey)} — ${formatRankingDetail(voter.ranking, LOGOS)} — ${date}`;
-    detailList.appendChild(li);
-  }
-  if (!detailList.children.length) {
-    const li = document.createElement('li');
-    li.textContent = 'Aucun vote pour le moment.';
-    detailList.appendChild(li);
-  }
-  container.appendChild(detailBlock);
+  const rankingBlock = document.createElement('div');
+  rankingBlock.className = 'admin-card';
+  rankingBlock.innerHTML = '<h3>Classement des logos</h3>';
+
+  const rankingGrid = document.createElement('div');
+  rankingGrid.className = 'admin-logo-ranking';
+
+  getRankedLogoSummaries(votesData).forEach(({ logo, summary }, index) => {
+    const item = document.createElement('article');
+    item.className = 'admin-logo-ranking__item';
+    item.setAttribute('data-logo-id', logo.id);
+
+    const visual = document.createElement('div');
+    visual.className = 'admin-logo-ranking__visual';
+
+    const badge = document.createElement('span');
+    badge.className = 'admin-logo-ranking__rank';
+    badge.textContent = `#${index + 1}`;
+
+    const image = document.createElement('img');
+    image.className = 'admin-logo-ranking__image';
+    image.src = logo.src;
+    image.alt = logo.name;
+    image.loading = 'lazy';
+
+    visual.appendChild(badge);
+    visual.appendChild(image);
+
+    const name = document.createElement('p');
+    name.className = 'admin-logo-ranking__name';
+    name.textContent = logo.name;
+
+    const meta = document.createElement('p');
+    meta.className = 'admin-logo-ranking__meta';
+    meta.textContent = `Moyenne ${formatAverageRank(summary.averageRank)} — ${formatVoteCount(summary.voteCount || 0)}`;
+
+    item.appendChild(visual);
+    item.appendChild(name);
+    item.appendChild(meta);
+    rankingGrid.appendChild(item);
+  });
+
+  rankingBlock.appendChild(rankingGrid);
+  container.appendChild(rankingBlock);
 }
 
 function renderMessages(messages) {

@@ -3,19 +3,49 @@ import assert from 'node:assert/strict';
 
 function createFakeElement(tagName = 'div') {
   let inner = '';
+  const classes = new Set();
   return {
     tagName,
+    attributes: {},
     className: '',
     children: [],
+    style: {},
     textContent: '',
+    src: '',
+    alt: '',
+    loading: '',
+    classList: {
+      add(name) {
+        classes.add(name);
+      },
+      contains(name) {
+        return classes.has(name);
+      },
+    },
     appendChild(child) {
       this.children.push(child);
+    },
+    setAttribute(name, value) {
+      this.attributes[name] = value;
+    },
+    getAttribute(name) {
+      return this.attributes[name];
     },
     querySelector(selector) {
       if (selector === '.admin-list') {
         return this.children.find((child) => child.className === 'admin-list') || null;
       }
+      if (selector.startsWith('.')) {
+        const className = selector.slice(1);
+        return findByClass(this, className)[0] || null;
+      }
       return null;
+    },
+    querySelectorAll(selector) {
+      if (selector.startsWith('.')) {
+        return findByClass(this, selector.slice(1));
+      }
+      return [];
     },
     set innerHTML(value) {
       inner = value;
@@ -40,6 +70,17 @@ function createFakeElement(tagName = 'div') {
   };
 }
 
+function findByClass(element, className) {
+  const matches = [];
+  for (const child of element.children) {
+    if (child.className === className || child.classList?.contains(className)) {
+      matches.push(child);
+    }
+    matches.push(...findByClass(child, className));
+  }
+  return matches;
+}
+
 function collectText(element) {
   return [element.textContent, ...element.children.map(collectText)].filter(Boolean).join(' ');
 }
@@ -54,7 +95,7 @@ async function loadAdminModule() {
   }
 }
 
-test('renderVotes shows individual admin votes without average ranking', async () => {
+test('renderVotes shows a visual logo ranking ordered by ascending average rank', async () => {
   const { renderVotes } = await loadAdminModule();
   const container = createFakeElement();
   const originalDocument = globalThis.document;
@@ -69,23 +110,26 @@ test('renderVotes shows individual admin votes without average ranking', async (
     renderVotes({
       palettes: { palette1: 1, palette2: 0 },
       logos: {
-        logo1: { averageRank: 1, voteCount: 1 },
+        logo1: { averageRank: 2.5, voteCount: 2 },
+        logo2: { averageRank: 1.25, voteCount: 2 },
+        logo3: { averageRank: null, voteCount: 0 },
       },
-      voters: [{
-        name: 'Alexis',
-        paletteKey: 'palette1',
-        ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6 },
-        ts: 1782986400000,
-      }],
+      voters: [],
     });
   } finally {
     globalThis.document = originalDocument;
   }
 
   const text = collectText(container);
-  assert.match(text, /Votes individuels/);
-  assert.match(text, /Alexis/);
-  assert.match(text, /1\. Logo 1/);
-  assert.doesNotMatch(text, /Classement moyen/);
-  assert.doesNotMatch(text, /moyenne/);
+  const cards = container.querySelectorAll('.admin-logo-ranking__item');
+  assert.equal(cards.length, 6);
+  assert.match(text, /Classement des logos/);
+  assert.equal(cards[0].getAttribute('data-logo-id'), 'logo2');
+  assert.equal(cards[1].getAttribute('data-logo-id'), 'logo1');
+  assert.equal(cards.at(-1).getAttribute('data-logo-id'), 'logo6');
+  assert.equal(cards[0].querySelector('.admin-logo-ranking__image').src, 'SVG/Goofy.svg');
+  assert.equal(cards[0].querySelector('.admin-logo-ranking__image').alt, 'Logo 2');
+  assert.match(text, /Moyenne 1\.25/);
+  assert.match(text, /2 votes/);
+  assert.doesNotMatch(text, /Votes individuels/);
 });

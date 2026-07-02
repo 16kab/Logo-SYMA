@@ -1,5 +1,5 @@
 .admin-main {
-  width: min(100%, 980px);
+  width: min(100%, 1180px);
 }
 
 #login-form {
@@ -60,6 +60,69 @@
 .admin-list {
   display: grid;
   gap: 0.5rem;
+}
+
+.admin-logo-ranking {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.admin-logo-ranking__item {
+  border: 1px solid var(--border, #d9ddd6);
+  border-radius: var(--radius, 8px);
+  background: var(--surface-soft, #f8f7f2);
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-logo-ranking__visual {
+  position: relative;
+  min-height: 190px;
+  border: 1px solid var(--border, #d9ddd6);
+  border-radius: var(--radius, 8px);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  overflow: hidden;
+}
+
+.admin-logo-ranking__rank {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  border: 1px solid var(--border-strong, #111111);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text, #111111);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-logo-ranking__image {
+  display: block;
+  max-width: 92%;
+  max-height: 150px;
+  object-fit: contain;
+  filter: brightness(0);
+}
+
+.admin-logo-ranking__name,
+.admin-logo-ranking__meta {
+  margin: 0;
+}
+
+.admin-logo-ranking__name {
+  font-weight: 750;
+}
+
+.admin-logo-ranking__meta {
+  color: var(--muted, #63645f);
+  font-size: 0.92rem;
 }
 
 #messages-list {
