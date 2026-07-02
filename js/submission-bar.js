@@ -65,11 +65,13 @@ export function createSubmissionBar(root, { onSubmit } = {}) {
       name,
       visitorId: id,
     });
-    sendButton.disabled = false;
+    sendButton.disabled = !paletteKey;
     statusEl.textContent = ok
-      ? `Merci ${name || ''}, c'est envoyé ✓`.replace('  ', ' ')
+      ? (name ? `Merci ${name}, c'est envoyé ✓` : "Merci, c'est envoyé ✓")
       : 'Une erreur est survenue, réessayez.';
   });
+
+  renderSummary();
 
   return {
     show() {
