@@ -1,0 +1,47 @@
+.admin-main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+#login-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.logo-summary {
+  border: 1px solid var(--border, #d8d8d8);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo-summary h3 {
+  margin: 0 0 0.5rem;
+}
+
+.voter-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+#messages-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#messages-list li {
+  border: 1px solid var(--border, #d8d8d8);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  background: #fff;
+}
+
+.message-meta {
+  font-size: 0.85rem;
+  color: #666;
+}

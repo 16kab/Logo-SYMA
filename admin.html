@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — SYMA Studio</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Retours clients — SYMA Studio</h1>
+  </header>
+
+  <main class="admin-main">
+    <section id="login-section">
+      <form id="login-form">
+        <label for="admin-password">Mot de passe</label>
+        <input type="password" id="admin-password" required />
+        <button type="submit">Se connecter</button>
+      </form>
+      <p id="login-status" role="status"></p>
+    </section>
+
+    <section id="dashboard-section" hidden>
+      <h2>Votes par logo</h2>
+      <div id="votes-summary"></div>
+
+      <h2>Messages</h2>
+      <ul id="messages-list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
