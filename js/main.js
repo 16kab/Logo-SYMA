@@ -1,8 +1,10 @@
 import { createComparatorPanel } from './comparator-panel.js';
 import { createVotesSection } from './votes-section.js';
 import { activateDevTheme } from './dev-theme.js';
+import { startVisitTracking } from './visit-tracker.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  startVisitTracking();
   activateDevTheme();
 
   createComparatorPanel(document.getElementById('panel-left'), {
