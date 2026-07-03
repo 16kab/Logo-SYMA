@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { createMemoryKv } from './api/_lib/memoryKv.js';
 import { createVoteHandler } from './api/vote.js';
 import { createVotesHandler } from './api/votes.js';
+import { createVisitHandler } from './api/visit.js';
+import { createVisitsHandler } from './api/visits.js';
 import { createAdminLoginHandler } from './api/admin-login.js';
 
 const PORT = process.env.PORT || 3000;
@@ -16,6 +18,8 @@ const getAdminPassword = () => ADMIN_PASSWORD;
 const routes = {
   '/api/vote': createVoteHandler(kv),
   '/api/votes': createVotesHandler(kv, getAdminPassword),
+  '/api/visit': createVisitHandler(kv),
+  '/api/visits': createVisitsHandler(kv, getAdminPassword),
   '/api/admin-login': createAdminLoginHandler(getAdminPassword),
 };
 

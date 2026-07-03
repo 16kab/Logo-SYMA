@@ -30,6 +30,12 @@ export function getKv() {
       return redis.hDel(key, field);
     },
 
+    async hget(key, field) {
+      const redis = await getClient();
+      const raw = await redis.hGet(key, field);
+      return raw === null ? null : JSON.parse(raw);
+    },
+
     async hgetall(key) {
       const redis = await getClient();
       const raw = await redis.hGetAll(key);

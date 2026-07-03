@@ -14,6 +14,18 @@ test('hgetall returns null for an unknown key', async () => {
   assert.equal(await kv.hgetall('vote:unknown'), null);
 });
 
+test('hget returns one stored field or null for missing key and field', async () => {
+  const kv = createMemoryKv();
+  await kv.hset('vote:logo1', {
+    v1: { value: 'up' },
+    v2: { value: 'down' },
+  });
+
+  assert.deepEqual(await kv.hget('vote:logo1', 'v1'), { value: 'up' });
+  assert.equal(await kv.hget('vote:logo1', 'missing'), null);
+  assert.equal(await kv.hget('vote:missing', 'v1'), null);
+});
+
 test('hdel removes a field and reports whether it existed', async () => {
   const kv = createMemoryKv();
   await kv.hset('vote:logo1', { v1: { value: 'up' } });
