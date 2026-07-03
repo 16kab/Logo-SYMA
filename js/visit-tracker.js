@@ -29,17 +29,37 @@ export async function sendVisitEvent(visitId, event, fetchFn = globalThis.fetch)
   }
 }
 
-export function startVisitTracking({
-  storage = globalThis.sessionStorage,
-  createId = createVisitId,
-  fetchFn = globalThis.fetch,
-  documentRef = globalThis.document,
-  windowRef = globalThis.window,
-  setIntervalFn = globalThis.setInterval,
-} = {}) {
-  if (!storage || !fetchFn) return { visitId: null, sendHeartbeat() {} };
+export function startVisitTracking(options = {}) {
+  const noopTracker = { visitId: null, sendHeartbeat() {} };
+  let storage;
+  let createId;
+  let fetchFn;
+  let documentRef;
+  let windowRef;
+  let setIntervalFn;
 
-  const visitId = getOrCreateVisitId(storage, createId);
+  try {
+    ({
+      storage = globalThis.sessionStorage,
+      createId = createVisitId,
+      fetchFn = globalThis.fetch,
+      documentRef = globalThis.document,
+      windowRef = globalThis.window,
+      setIntervalFn = globalThis.setInterval,
+    } = options);
+  } catch {
+    return noopTracker;
+  }
+
+  if (!storage || !fetchFn) return noopTracker;
+
+  let visitId;
+  try {
+    visitId = getOrCreateVisitId(storage, createId);
+  } catch {
+    return noopTracker;
+  }
+
   const send = (event) => {
     void sendVisitEvent(visitId, event, fetchFn);
   };

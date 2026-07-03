@@ -92,3 +92,29 @@ test('startVisitTracking sends start and heartbeat events', () => {
   assert.equal(tracker.visitId, 'visit-1');
   assert.deepEqual(events, ['start', 'heartbeat', 'heartbeat', 'heartbeat']);
 });
+
+test('startVisitTracking is a no-op when storage access throws', () => {
+  let fetchCalls = 0;
+  const storage = {
+    getItem() {
+      throw new Error('storage unavailable');
+    },
+    setItem() {
+      throw new Error('storage unavailable');
+    },
+  };
+
+  let tracker;
+  assert.doesNotThrow(() => {
+    tracker = startVisitTracking({
+      storage,
+      fetchFn: async () => {
+        fetchCalls += 1;
+        return { ok: true };
+      },
+    });
+  });
+
+  assert.equal(tracker.visitId, null);
+  assert.equal(fetchCalls, 0);
+});
