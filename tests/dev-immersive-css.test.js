@@ -38,8 +38,9 @@ test('dev immersive headings are smaller and allowed to stay on one line', () =>
   assert.match(block, /line-height:\s*1\.05/);
 });
 
-test('dev immersive interface avoids gradients and replaces the old yellow accent', () => {
-  assert.doesNotMatch(css, /linear-gradient/);
+test('dev immersive gradients are reserved for the submission panel accent', () => {
+  const withoutSubmissionPanel = css.replace(/\.dev-immersive [^{}]*submission-bar[^{}]*\{[^}]*\}/g, '');
+  assert.doesNotMatch(withoutSubmissionPanel, /linear-gradient/);
   assert.match(css, /--accent:\s*#b8c2d6/);
   assert.doesNotMatch(css, /#d6b46d|#e4c985|#b79046|#dcc18a/);
 });
