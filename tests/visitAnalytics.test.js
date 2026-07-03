@@ -63,6 +63,43 @@ test('increments page views when a known session starts again', async () => {
   });
 });
 
+test('writes a visit update without reading the full visits hash', async () => {
+  let stored;
+  const existing = {
+    visitId: 'visit-1',
+    startedAt: 1000,
+    lastSeenAt: 1000,
+    durationMs: 0,
+    pageViews: 1,
+  };
+  const kv = {
+    async hget(key, field) {
+      assert.equal(key, VISITS_KEY);
+      assert.equal(field, 'visit-1');
+      return existing;
+    },
+    async hset(key, fieldValues) {
+      assert.equal(key, VISITS_KEY);
+      stored = fieldValues['visit-1'];
+      return 1;
+    },
+    async hgetall() {
+      throw new Error('recordVisitEvent should not read the full visits hash');
+    },
+  };
+
+  const record = await recordVisitEvent(kv, { visitId: 'visit-1', event: 'start' }, () => 61000);
+
+  assert.deepEqual(record, {
+    visitId: 'visit-1',
+    startedAt: 1000,
+    lastSeenAt: 61000,
+    durationMs: 60000,
+    pageViews: 2,
+  });
+  assert.deepEqual(stored, record);
+});
+
 test('summarizes visits by UTC day, active sessions, and recent activity', () => {
   const now = Date.UTC(2026, 6, 3, 12, 2, 0);
   const entries = [

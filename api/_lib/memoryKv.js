@@ -19,6 +19,12 @@ export function createMemoryKv() {
       return existed ? 1 : 0;
     },
 
+    async hget(key, field) {
+      const hash = hashes.get(key);
+      if (!hash || !hash.has(field)) return null;
+      return hash.get(field);
+    },
+
     async hgetall(key) {
       const hash = hashes.get(key);
       if (!hash || hash.size === 0) return null;

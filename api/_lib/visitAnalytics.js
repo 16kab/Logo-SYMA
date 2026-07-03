@@ -40,8 +40,7 @@ export function isValidVisitPayload(body) {
 
 export async function recordVisitEvent(kv, { visitId, event }, now = () => Date.now()) {
   const timestamp = now();
-  const visits = (await kv.hgetall(VISITS_KEY)) || {};
-  const existing = visits[visitId];
+  const existing = await kv.hget(VISITS_KEY, visitId);
   const startedAt = isFiniteNumber(existing?.startedAt) ? existing.startedAt : timestamp;
   const currentPageViews = toNonNegativeInteger(existing?.pageViews, 0);
   const pageViews = currentPageViews + (event === 'start' ? 1 : 0);
