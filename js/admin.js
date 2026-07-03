@@ -254,14 +254,17 @@ async function fetchAdminJson(path, token) {
 
 async function showDashboard(token) {
   let votesData;
-  let visitsData;
+  let visitsData = null;
   try {
-    const [votesResponse, visitsResponse] = await Promise.all([
+    const [votesResult, visitsResult] = await Promise.allSettled([
       fetchAdminJson('/api/votes', token),
       fetchAdminJson('/api/visits', token),
     ]);
 
-    if (votesResponse.status === 401 || visitsResponse.status === 401) {
+    const votesResponse = votesResult.status === 'fulfilled' ? votesResult.value : null;
+    const visitsResponse = visitsResult.status === 'fulfilled' ? visitsResult.value : null;
+
+    if (votesResponse?.status === 401 || visitsResponse?.status === 401) {
       sessionStorage.removeItem(TOKEN_STORAGE_KEY);
       document.getElementById('login-section').hidden = false;
       document.getElementById('dashboard-section').hidden = true;
@@ -269,12 +272,19 @@ async function showDashboard(token) {
       return;
     }
 
-    if (!votesResponse.ok || !visitsResponse.ok) {
+    if (votesResult.status === 'rejected' || !votesResponse.ok) {
       throw new Error('Admin data request failed');
     }
 
     votesData = await votesResponse.json();
-    visitsData = await visitsResponse.json();
+
+    if (visitsResponse?.ok) {
+      try {
+        visitsData = await visitsResponse.json();
+      } catch (error) {
+        visitsData = null;
+      }
+    }
   } catch (error) {
     document.getElementById('login-section').hidden = false;
     document.getElementById('dashboard-section').hidden = true;

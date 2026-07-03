@@ -25,6 +25,7 @@ function createFakeElement(tagName = 'div') {
     appendChild(child) {
       this.children.push(child);
     },
+    addEventListener() {},
     setAttribute(name, value) {
       this.attributes[name] = value;
     },
@@ -94,6 +95,34 @@ async function loadAdminModule() {
   } finally {
     globalThis.document = originalDocument;
   }
+}
+
+async function loadAdminModuleWithDom(document) {
+  const originalDocument = globalThis.document;
+  globalThis.document = document;
+  try {
+    await import(`../js/admin.js?admin-render=${Date.now()}`);
+  } finally {
+    globalThis.document = originalDocument;
+  }
+}
+
+function createAdminDocument(elements) {
+  return {
+    createElement: createFakeElement,
+    getElementById(id) {
+      return elements[id] || null;
+    },
+    addEventListener(eventName, callback) {
+      if (eventName === 'DOMContentLoaded') {
+        callback();
+      }
+    },
+  };
+}
+
+async function flushAsyncDashboardLoad() {
+  await new Promise((resolve) => setImmediate(resolve));
 }
 
 test('renderVotes shows a visual logo ranking ordered by ascending average rank', async () => {
@@ -262,4 +291,71 @@ test('renderDashboard prepends visit analytics before vote summaries', async () 
   assert.match(text, /3 visites/);
   assert.match(text, /Palettes préférées/);
   assert.equal(container.children[0].className, 'admin-card admin-visits-card');
+});
+
+test('dashboard still renders votes when visit analytics request fails', async () => {
+  const elements = {
+    'login-section': createFakeElement('section'),
+    'dashboard-section': createFakeElement('section'),
+    'login-status': createFakeElement('p'),
+    'votes-summary': createFakeElement('div'),
+    'login-form': createFakeElement('form'),
+    'admin-password': createFakeElement('input'),
+  };
+  const document = createAdminDocument(elements);
+  const originalFetch = globalThis.fetch;
+  const originalSessionStorage = globalThis.sessionStorage;
+  globalThis.sessionStorage = {
+    getItem(key) {
+      return key === 'syma_admin_token' ? 'admin-token' : null;
+    },
+    setItem() {},
+    removeItem() {},
+  };
+  globalThis.fetch = async (path) => {
+    if (path === '/api/votes') {
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return {
+            palettes: { palette1: 1, palette2: 0 },
+            logos: {
+              logo1: { averageRank: 1, voteCount: 1 },
+            },
+            voters: [{
+              name: 'Alexis',
+              paletteKey: 'palette1',
+              ranking: { logo1: 1, logo2: 2, logo3: 3, logo4: 4, logo5: 5, logo6: 6, logo7: 7 },
+            }],
+          };
+        },
+      };
+    }
+
+    assert.equal(path, '/api/visits');
+    return {
+      ok: false,
+      status: 500,
+      async json() {
+        throw new Error('visits unavailable');
+      },
+    };
+  };
+
+  try {
+    await loadAdminModuleWithDom(document);
+    await flushAsyncDashboardLoad();
+  } finally {
+    globalThis.fetch = originalFetch;
+    globalThis.sessionStorage = originalSessionStorage;
+  }
+
+  const text = collectText(elements['votes-summary']);
+  assert.equal(elements['login-section'].hidden, true);
+  assert.equal(elements['dashboard-section'].hidden, false);
+  assert.match(text, /Palettes préférées/);
+  assert.match(text, /Alexis/);
+  assert.doesNotMatch(text, /Visites du site/);
+  assert.equal(elements['votes-summary'].querySelector('.admin-visits-card'), null);
 });
