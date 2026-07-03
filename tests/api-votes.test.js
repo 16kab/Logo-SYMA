@@ -65,6 +65,18 @@ test('returns empty aggregates with no votes', async () => {
   assert.equal(res.body.logos.logo1.score, 0);
 });
 
+test('returns 401 when a Bearer token is present but invalid', async () => {
+  const kv = createFakeKv();
+  await seedVote(kv, 'v1', 'Alexis', 'palette1');
+  const handler = createVotesHandler(kv, () => 'secret');
+  const res = createMockRes();
+
+  await handler({ method: 'GET', headers: { authorization: 'Bearer stale-token' } }, res);
+
+  assert.equal(res.statusCode, 401);
+  assert.equal(res.body.voters, undefined);
+});
+
 test('rejects non-GET methods', async () => {
   const kv = createFakeKv();
   const handler = createVotesHandler(kv);

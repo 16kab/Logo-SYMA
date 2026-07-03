@@ -11,6 +11,16 @@ export function createVotesHandler(kv, getAdminPassword = () => process.env.ADMI
 
     const token = extractBearerToken(req.headers && req.headers.authorization);
     const isAdmin = isAuthorizedToken(token, getAdminPassword());
+
+    // A request that carries a Bearer token but is not authorized has a
+    // stale/invalid token (e.g. the admin password changed) — surface a 401
+    // so the admin page can fall back to the login screen. Requests without
+    // any token stay public (the main page reads aggregates + its own vote).
+    if (token && !isAdmin) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
     const requestUrl = new URL(req.url || '/', 'http://localhost');
     const visitorId = requestUrl.searchParams.get('visitorId');
     const hash = (await kv.hgetall('votes')) || {};
