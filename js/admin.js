@@ -1,6 +1,7 @@
 import { LOGOS } from './logos.js';
 import { PALETTES, PALETTE_KEYS } from './palettes.js';
 import { formatPaletteLabel } from './admin-format.js';
+import { createVisitAnalyticsCard } from './admin-visits.js';
 
 const TOKEN_STORAGE_KEY = 'syma_admin_token';
 
@@ -142,13 +143,13 @@ function createLogoRankingList(className) {
   return rankingGrid;
 }
 
-export function renderVotes(votesData) {
+export function renderVotes(votesData, { reset = true } = {}) {
   const container = document.getElementById('votes-summary');
-  container.innerHTML = '';
+  if (reset) container.innerHTML = '';
 
   const paletteBlock = document.createElement('div');
   paletteBlock.className = 'admin-card';
-  paletteBlock.innerHTML = '<h3>Palettes préférées</h3>';
+  paletteBlock.innerHTML = '<h3>Palettes preferees</h3>';
   const paletteList = document.createElement('ul');
   paletteList.className = 'admin-list admin-palette-list';
   for (const key of PALETTE_KEYS) {
@@ -235,28 +236,55 @@ export function renderVotes(votesData) {
   container.appendChild(voterBlock);
 }
 
+export function renderDashboard({ votesData, visitsData }) {
+  const container = document.getElementById('votes-summary');
+  container.innerHTML = '';
+
+  if (visitsData) {
+    container.appendChild(createVisitAnalyticsCard(visitsData));
+  }
+
+  renderVotes(votesData, { reset: false });
+}
+
+async function fetchAdminJson(path, token) {
+  const response = await fetch(path, { headers: { Authorization: `Bearer ${token}` } });
+  return response;
+}
+
 async function showDashboard(token) {
   let votesData;
+  let visitsData;
   try {
-    const response = await fetch('/api/votes', { headers: { Authorization: `Bearer ${token}` } });
-    if (response.status === 401) {
+    const [votesResponse, visitsResponse] = await Promise.all([
+      fetchAdminJson('/api/votes', token),
+      fetchAdminJson('/api/visits', token),
+    ]);
+
+    if (votesResponse.status === 401 || visitsResponse.status === 401) {
       sessionStorage.removeItem(TOKEN_STORAGE_KEY);
       document.getElementById('login-section').hidden = false;
       document.getElementById('dashboard-section').hidden = true;
-      document.getElementById('login-status').textContent = 'Session expirée, reconnectez-vous.';
+      document.getElementById('login-status').textContent = 'Session expiree, reconnectez-vous.';
       return;
     }
-    votesData = await response.json();
+
+    if (!votesResponse.ok || !visitsResponse.ok) {
+      throw new Error('Admin data request failed');
+    }
+
+    votesData = await votesResponse.json();
+    visitsData = await visitsResponse.json();
   } catch (error) {
     document.getElementById('login-section').hidden = false;
     document.getElementById('dashboard-section').hidden = true;
-    document.getElementById('login-status').textContent = 'Erreur réseau, réessayez.';
+    document.getElementById('login-status').textContent = 'Erreur reseau, reessayez.';
     return;
   }
 
   document.getElementById('login-section').hidden = true;
   document.getElementById('dashboard-section').hidden = false;
-  renderVotes(votesData);
+  renderDashboard({ votesData, visitsData });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -272,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
       document.getElementById('login-status').textContent = networkError
-        ? 'Erreur réseau, réessayez.'
+        ? 'Erreur reseau, reessayez.'
         : 'Mot de passe incorrect.';
       return;
     }

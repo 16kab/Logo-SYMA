@@ -228,3 +228,38 @@ test('renderVotes shows a voter message when present', async () => {
   const text = collectText(container);
   assert.match(text, /J'adore le logo 3/);
 });
+
+test('renderDashboard prepends visit analytics before vote summaries', async () => {
+  const { renderDashboard } = await loadAdminModule();
+  const container = createFakeElement();
+  const originalDocument = globalThis.document;
+  globalThis.document = {
+    createElement: createFakeElement,
+    getElementById(id) {
+      return id === 'votes-summary' ? container : null;
+    },
+  };
+
+  try {
+    renderDashboard({
+      visitsData: {
+        summary: { totalVisits: 3, averageDurationMs: 30000, activeNow: 1 },
+        daily: [{ date: '2026-07-03', visits: 3, averageDurationMs: 30000 }],
+        recent: [],
+      },
+      votesData: {
+        palettes: { palette1: 1, palette2: 0 },
+        logos: {},
+        voters: [],
+      },
+    });
+  } finally {
+    globalThis.document = originalDocument;
+  }
+
+  const text = collectText(container);
+  assert.match(text, /Visites du site/);
+  assert.match(text, /3 visites/);
+  assert.match(text, /Palettes preferees/);
+  assert.equal(container.children[0].className, 'admin-card admin-visits-card');
+});
