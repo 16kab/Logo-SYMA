@@ -54,6 +54,7 @@ test('sendVisitEvent posts an anonymous visit payload', async () => {
   assert.equal(ok, true);
   assert.equal(calls[0].url, '/api/visit');
   assert.equal(calls[0].options.method, 'POST');
+  assert.equal(calls[0].options.headers['Content-Type'], 'application/json');
   assert.equal(calls[0].options.keepalive, true);
   assert.deepEqual(JSON.parse(calls[0].options.body), {
     visitId: 'visit-1',
