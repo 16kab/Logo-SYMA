@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — SYMA Studio</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,23 +13,29 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/admin.css" />
 </head>
-<body>
+<body class="admin-dark">
   <header class="site-header">
-    <h1>Retours clients — SYMA Studio</h1>
+    <h1>SYMA Studio</h1>
   </header>
 
   <main class="admin-main">
-    <section id="login-section">
+    <section id="login-section" class="admin-login">
       <form id="login-form">
+        <p class="admin-eyebrow">Espace privé</p>
+        <h2 class="admin-login__title">Retours clients</h2>
+        <p class="admin-login__lede">Entrez le mot de passe pour consulter les votes et les messages.</p>
         <label for="admin-password">Mot de passe</label>
-        <input type="password" id="admin-password" required />
+        <input type="password" id="admin-password" required autocomplete="current-password" placeholder="••••••••" />
         <button type="submit">Se connecter</button>
+        <p id="login-status" role="status"></p>
       </form>
-      <p id="login-status" role="status"></p>
     </section>
 
     <section id="dashboard-section" hidden>
-      <h2>Synthèse des votes</h2>
+      <div class="admin-heading">
+        <p class="admin-eyebrow">Admin</p>
+        <h2>Synthèse des votes</h2>
+      </div>
       <div id="votes-summary"></div>
     </section>
   </main>
