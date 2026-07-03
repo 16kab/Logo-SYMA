@@ -17,6 +17,14 @@ function appendText(parent, tagName, className, text, doc) {
   return element;
 }
 
+function formatChartSummary(daily) {
+  const dailySummary = daily
+    .map((day) => `${formatDateLabel(day.date)}, ${formatVisitCount(day.visits)}, durée moyenne ${formatDuration(day.averageDurationMs)}`)
+    .join(' ; ');
+
+  return `Visites anonymes par jour et durée moyenne : ${dailySummary}`;
+}
+
 export function formatDuration(durationMs) {
   const totalSeconds = Math.max(0, Math.round((durationMs || 0) / 1000));
   if (totalSeconds < 60) return `${totalSeconds} s`;
@@ -59,7 +67,7 @@ export function createVisitAnalyticsCard(visitsData, doc = document) {
   const chart = doc.createElement('div');
   chart.className = 'admin-visits-chart';
   chart.setAttribute('role', 'img');
-  chart.setAttribute('aria-label', 'Visites anonymes par jour et durée moyenne');
+  chart.setAttribute('aria-label', formatChartSummary(daily));
   card.appendChild(chart);
 
   for (const day of daily) {

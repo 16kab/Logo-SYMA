@@ -81,7 +81,10 @@ test('createVisitAnalyticsCard renders metrics and a labelled chart', () => {
   assert.match(text, /42 s/);
   assert.match(text, /2 actives/);
   assert.equal(chart.getAttribute('role'), 'img');
-  assert.match(chart.getAttribute('aria-label'), /Visites anonymes par jour/);
+  assert.equal(
+    chart.getAttribute('aria-label'),
+    'Visites anonymes par jour et durée moyenne : 02/07, 3 visites, durée moyenne 30 s ; 03/07, 9 visites, durée moyenne 1 min',
+  );
   assert.equal(bars.length, 2);
   assert.equal(bars[1].style.height, '100%');
 });
