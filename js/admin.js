@@ -149,7 +149,7 @@ export function renderVotes(votesData, { reset = true } = {}) {
 
   const paletteBlock = document.createElement('div');
   paletteBlock.className = 'admin-card';
-  paletteBlock.innerHTML = '<h3>Palettes preferees</h3>';
+  paletteBlock.innerHTML = '<h3>Palettes préférées</h3>';
   const paletteList = document.createElement('ul');
   paletteList.className = 'admin-list admin-palette-list';
   for (const key of PALETTE_KEYS) {
@@ -265,7 +265,7 @@ async function showDashboard(token) {
       sessionStorage.removeItem(TOKEN_STORAGE_KEY);
       document.getElementById('login-section').hidden = false;
       document.getElementById('dashboard-section').hidden = true;
-      document.getElementById('login-status').textContent = 'Session expiree, reconnectez-vous.';
+      document.getElementById('login-status').textContent = 'Session expirée, reconnectez-vous.';
       return;
     }
 
@@ -278,7 +278,7 @@ async function showDashboard(token) {
   } catch (error) {
     document.getElementById('login-section').hidden = false;
     document.getElementById('dashboard-section').hidden = true;
-    document.getElementById('login-status').textContent = 'Erreur reseau, reessayez.';
+    document.getElementById('login-status').textContent = 'Erreur réseau, réessayez.';
     return;
   }
 
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
       document.getElementById('login-status').textContent = networkError
-        ? 'Erreur reseau, reessayez.'
+        ? 'Erreur réseau, réessayez.'
         : 'Mot de passe incorrect.';
       return;
     }

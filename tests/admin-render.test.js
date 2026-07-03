@@ -260,6 +260,6 @@ test('renderDashboard prepends visit analytics before vote summaries', async () 
   const text = collectText(container);
   assert.match(text, /Visites du site/);
   assert.match(text, /3 visites/);
-  assert.match(text, /Palettes preferees/);
+  assert.match(text, /Palettes préférées/);
   assert.equal(container.children[0].className, 'admin-card admin-visits-card');
 });
