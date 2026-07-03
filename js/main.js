@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logoId: 'logo1',
     bgColor: '#18233f',
     logoColor: '#ffffff',
+    label: 'A',
   });
 
   createComparatorPanel(document.getElementById('panel-right'), {
@@ -17,11 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     logoId: 'logo2',
     bgColor: '#f7f3e7',
     logoColor: '#18233f',
+    label: 'B',
   });
 
   createVotesSection({
-    colorControlRoot: document.getElementById('votes-color-control'),
-    gridRoot: document.getElementById('votes-grid'),
     submissionRoot: document.getElementById('submission-bar-root'),
   });
 });

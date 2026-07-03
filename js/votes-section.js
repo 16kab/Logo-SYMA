@@ -4,7 +4,7 @@ import { createSubmissionBar } from './submission-bar.js';
 import { defaultOrder } from './ranking-order.js';
 import { getIdentity } from './identity.js';
 
-export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot }) {
+export function createVotesSection({ submissionRoot }) {
   let paletteKey = null;
   let order = defaultOrder();
   let bar = null;
@@ -24,15 +24,10 @@ export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot 
   }
 
   function renderPaletteChoice() {
-    colorControlRoot.innerHTML = `
-      <div class="vote-step">
-        <p class="eyebrow">Vote</p>
-        <h2>Choisissez votre palette préférée</h2>
-        <div class="vote-palette-grid" data-role="palette-grid"></div>
-      </div>
-    `;
+    bar.paletteSlot.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'vote-palette-grid';
 
-    const grid = colorControlRoot.querySelector('[data-role="palette-grid"]');
     for (const key of PALETTE_KEYS) {
       const button = document.createElement('button');
       button.type = 'button';
@@ -47,11 +42,12 @@ export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot 
       button.addEventListener('click', () => {
         paletteKey = key;
         renderPaletteChoice();
-        bar.show();
         bar.update({ paletteKey, order });
       });
       grid.appendChild(button);
     }
+
+    bar.paletteSlot.appendChild(grid);
   }
 
   async function submitVote({ paletteKey: pk, ranking, message, name, visitorId }) {
@@ -68,17 +64,6 @@ export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot 
     }
   }
 
-  function renderRankingHeader() {
-    gridRoot.innerHTML = `
-      <div class="ranking-header">
-        <h2>Classez les logos</h2>
-        <p>Glissez pour classer — 1 = préféré, 7 = moins préféré.</p>
-      </div>
-      <div data-role="ranking-list"></div>
-    `;
-    return gridRoot.querySelector('[data-role="ranking-list"]');
-  }
-
   function hydrateExistingVote() {
     const { id } = getIdentity();
     if (!id) return;
@@ -93,7 +78,6 @@ export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot 
           rankingList.setOrder(order);
         }
         renderPaletteChoice();
-        bar.show();
         bar.update({ paletteKey, order });
       })
       .catch((error) => console.error(error));
@@ -102,19 +86,15 @@ export function createVotesSection({ colorControlRoot, gridRoot, submissionRoot 
   function initialize() {
     bar = createSubmissionBar(submissionRoot, { onSubmit: submitVote });
     renderPaletteChoice();
-    const listRoot = renderRankingHeader();
-    rankingList = createRankingList(listRoot, {
+    rankingList = createRankingList(bar.rankingSlot, {
       order,
-      onFirstInteraction: () => {
-        bar.show();
-        bar.update({ paletteKey, order });
-      },
       onChange: (nextOrder) => {
         order = nextOrder;
         bar.update({ paletteKey, order });
       },
     });
     bar.update({ paletteKey, order });
+    bar.show();
     hydrateExistingVote();
   }
 

@@ -43,6 +43,19 @@
   width: min(100%, 1680px);
   padding-top: 1.8rem;
   gap: clamp(3rem, 6vw, 6rem);
+  transition: padding-right 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Le panneau de vote est permanent : on lui réserve la place à droite,
+   récupérée quand il est replié en onglet. */
+@media (min-width: 1200px) {
+  .dev-immersive:not(.panel-docked) main {
+    padding-right: 448px;
+  }
+
+  .dev-immersive.panel-docked main {
+    padding-right: 84px;
+  }
 }
 
 .dev-immersive .section-heading {
@@ -96,10 +109,6 @@
   }
 }
 
-.dev-immersive .votes-section > h2 {
-  max-width: none;
-}
-
 .dev-immersive .eyebrow {
   color: var(--brand-accent);
   font-size: 0.72rem;
@@ -108,107 +117,226 @@
 }
 
 .dev-immersive .comparator {
-  gap: clamp(1.2rem, 2.4vw, 2.4rem);
+  gap: clamp(1.4rem, 2.6vw, 3rem);
 }
 
-.dev-immersive .comparator-panel,
-.dev-immersive .votes-color-control,
-.dev-immersive .votes-grid {
-  border-color: var(--border);
-  background: rgba(16, 19, 24, 0.88);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(24px);
-}
-
+/* Épuré : plus de carte autour du comparateur, l'aperçu devient le héros. */
 .dev-immersive .comparator-panel {
-  padding: clamp(0.8rem, 1.3vw, 1.35rem);
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
 }
 
 .dev-immersive .preview-box {
   min-height: clamp(360px, 37vw, 640px);
-  border: 1px solid rgba(203, 211, 223, 0.2);
+  border: 1px solid rgba(203, 211, 223, 0.14);
+  border-radius: 22px;
   background: #f7f9fc;
-  box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.05);
+  box-shadow: 0 44px 120px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(16, 19, 24, 0.04);
+}
+
+.dev-immersive .comparator-chip {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(11, 13, 16, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f3f6fb;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  pointer-events: none;
 }
 
 .dev-immersive .panel-controls {
-  padding-top: 0.9rem;
-  gap: 0.72rem;
+  padding: 1.1rem 0.35rem 0;
+  gap: 0.85rem;
 }
 
 .dev-immersive .control-label {
-  color: var(--accent);
+  color: rgba(174, 182, 197, 0.78);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
 }
 
-.dev-immersive .thumb-button,
-.dev-immersive .palette-tab,
-.dev-immersive .swatch {
-  border-color: rgba(203, 211, 223, 0.24);
-  background: rgba(239, 243, 249, 0.08);
+/* Vignettes de modèles : chips sombres, logo en silhouette claire. */
+.dev-immersive .thumb-button {
+  width: 58px;
+  height: 40px;
+  border-radius: 10px;
+  border-color: rgba(202, 211, 225, 0.14);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text);
 }
 
-.dev-immersive .thumb-button {
-  width: 62px;
-  height: 42px;
-  background: rgba(248, 250, 252, 0.9);
+.dev-immersive .thumb-button:hover {
+  border-color: rgba(202, 211, 225, 0.35);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .dev-immersive .thumb-button__image {
-  filter: brightness(0);
-  opacity: 0.88;
+  filter: brightness(0) invert(1);
+  opacity: 0.72;
+  transition: opacity 180ms ease;
 }
 
-.dev-immersive .thumb-button.is-active,
-.dev-immersive .palette-tab.is-active,
-.dev-immersive .swatch.is-active {
-  border-color: var(--accent);
-  background: rgba(184, 194, 214, 0.18);
-  color: #f8fafc;
-  box-shadow: inset 0 0 0 1px rgba(184, 194, 214, 0.6), 0 12px 30px rgba(0, 0, 0, 0.24);
+.dev-immersive .thumb-button.is-active {
+  border-color: var(--brand-accent);
+  background: rgba(120, 140, 227, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
 }
 
-.dev-immersive .votes-section {
-  gap: 1.3rem;
+.dev-immersive .thumb-button.is-active .thumb-button__image,
+.dev-immersive .thumb-button:hover .thumb-button__image {
+  opacity: 1;
 }
 
-.dev-immersive .vote-palette-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2rem;
+/* Palette : contrôle segmenté en pilule. */
+.dev-immersive .palette-tabs {
+  display: inline-flex;
+  width: max-content;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(202, 211, 225, 0.12);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.dev-immersive .vote-palette-card {
-  min-height: 190px;
-  border-color: rgba(203, 211, 223, 0.22);
-  background: rgba(16, 19, 24, 0.9);
+.dev-immersive .palette-tab {
+  min-height: 32px;
+  border: none;
+  border-radius: 999px;
+  padding: 0.32rem 0.95rem;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.dev-immersive .palette-tab:hover {
+  border-color: transparent;
   color: var(--text);
-  padding: clamp(1rem, 1.8vw, 1.6rem);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
 }
 
-.dev-immersive .vote-palette-card:hover,
+.dev-immersive .palette-tab.is-active {
+  background: var(--brand-accent);
+  color: #0d1016;
+  box-shadow: 0 8px 20px rgba(120, 140, 227, 0.35);
+}
+
+/* Pastilles de couleur : anneau net à l'état actif. */
+.dev-immersive .swatch {
+  width: 30px;
+  height: 30px;
+  border-color: rgba(202, 211, 225, 0.2);
+  background: rgba(239, 243, 249, 0.08);
+}
+
+.dev-immersive .swatch:hover {
+  transform: scale(1.1);
+  border-color: rgba(202, 211, 225, 0.5);
+  box-shadow: none;
+}
+
+.dev-immersive .swatch.is-active {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #0b0d10, 0 0 0 4px var(--brand-accent);
+}
+
+/* --- Vote dans le panneau : cartes palette compactes --- */
+.dev-immersive .vote-palette-card {
+  border-color: rgba(202, 211, 225, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dev-immersive .vote-palette-card:hover {
+  border-color: rgba(202, 211, 225, 0.35);
+  background: rgba(255, 255, 255, 0.07);
+}
+
 .dev-immersive .vote-palette-card.is-active {
-  border-color: var(--accent);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+  border-color: var(--brand-accent);
+  background: rgba(120, 140, 227, 0.12);
+  box-shadow: 0 0 0 1px var(--brand-accent), 0 14px 34px rgba(0, 0, 0, 0.35);
 }
 
 .dev-immersive .vote-palette-card__label {
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2vw, 2rem);
+  font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
 }
 
 .dev-immersive .palette-stack__swatch {
-  width: clamp(58px, 6vw, 86px);
-  height: clamp(58px, 6vw, 86px);
-  border-color: rgba(248, 250, 252, 0.26);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.26);
-  margin-left: -0.65rem;
+  border: 2px solid rgba(13, 16, 22, 0.9);
+  box-shadow: none;
 }
 
-.dev-immersive .ranking-header p {
-  color: var(--muted);
+/* --- Classement dans le panneau : lignes fines --- */
+.dev-immersive .submission-bar .ranking-list {
+  gap: 0.3rem;
+}
+
+.dev-immersive .submission-bar .ranking-row {
+  grid-template-columns: auto auto 46px 1fr;
+  gap: 0.6rem;
+  padding: 0.32rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+}
+
+.dev-immersive .submission-bar .ranking-row:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+.dev-immersive .submission-bar .ranking-row.is-dragging {
+  transform: scale(1.02);
+  background: rgba(30, 37, 52, 0.98);
+  border-color: rgba(202, 211, 225, 0.2);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+
+.dev-immersive .submission-bar .ranking-row__handle {
+  font-size: 1rem;
+  padding: 0.3rem 0.2rem;
+  opacity: 0.55;
+}
+
+.dev-immersive .submission-bar .ranking-row__rank {
+  min-width: 1.1rem;
+  font-size: 0.82rem;
+  color: var(--brand-accent);
+}
+
+.dev-immersive .submission-bar .ranking-row__preview {
+  width: 46px;
+  height: 30px;
+  min-height: 0;
+  border: none;
+  border-radius: 7px;
+  padding: 0.28rem;
+  box-shadow: none;
+}
+
+.dev-immersive .submission-bar .ranking-row__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(243, 246, 251, 0.9);
 }
 
 .dev-immersive .ranking-list {
@@ -433,87 +561,11 @@
   color: var(--muted);
 }
 
-.dev-immersive .submission-bar__palette {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.7rem 0.85rem;
-  border-radius: 12px;
-  border: 1px solid rgba(202, 211, 225, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.dev-immersive .submission-bar__palette--empty {
-  border-style: dashed;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
-.dev-immersive .submission-bar__palette-name {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.dev-immersive .submission-bar__swatches {
-  display: inline-flex;
-}
-
-.dev-immersive .submission-bar__swatch {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid rgba(13, 16, 22, 0.9);
-  margin-left: -6px;
-}
-
-.dev-immersive .submission-bar__swatch:first-child {
-  margin-left: 0;
-}
-
-.dev-immersive .submission-bar__order {
-  list-style: none;
-  margin: 0;
-  padding: 0.25rem 0.85rem;
-  border-radius: 12px;
-  border: 1px solid rgba(202, 211, 225, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.dev-immersive .submission-bar__order-item {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.42rem 0;
-  border-bottom: 1px solid rgba(202, 211, 225, 0.08);
-}
-
-.dev-immersive .submission-bar__order-item:last-child {
-  border-bottom: none;
-}
-
-.dev-immersive .submission-bar__rank {
-  flex: none;
-  width: 1.2rem;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--brand-accent);
-  text-align: center;
-}
-
-.dev-immersive .submission-bar__order-logo {
-  flex: none;
-  width: 44px;
-  height: 15px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.85;
-}
-
-.dev-immersive .submission-bar__order-name {
-  font-size: 0.85rem;
-  color: rgba(243, 246, 251, 0.85);
+.dev-immersive .submission-bar__label-hint {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(174, 182, 197, 0.65);
 }
 
 .dev-immersive .submission-bar__footer {
@@ -628,6 +680,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dev-immersive main,
   .dev-immersive .submission-bar,
   .dev-immersive .submission-bar__chevron,
   .dev-immersive .submission-bar__inner {

@@ -9,9 +9,11 @@ import {
 import { renderPaletteTabs, renderSwatches } from './palette-controls.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 
-export function createComparatorPanelMarkup() {
+export function createComparatorPanelMarkup(label = '') {
+  const chip = label ? `<span class="comparator-chip" aria-hidden="true">${label}</span>` : '';
   return `
     <div class="preview-box comparator-preview" data-role="preview">
+      ${chip}
       <div class="preview-box__logo" data-role="preview-logo"></div>
       <div class="preview-box__favicon" data-role="favicon-badge"></div>
     </div>
@@ -60,13 +62,13 @@ export function renderLogoThumbs(container, activeLogoId, onSelect) {
   }
 }
 
-export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = LOGOS[0].id, bgColor, logoColor } = {}) {
+export function createComparatorPanel(root, { paletteKey = 'palette1', logoId = LOGOS[0].id, bgColor, logoColor, label = '' } = {}) {
   let state = initialState(paletteKey, logoId);
   if (bgColor) state = withBgColor(state, bgColor);
   if (logoColor) state = withLogoColor(state, logoColor);
   let svgElement = null;
 
-  root.innerHTML = createComparatorPanelMarkup();
+  root.innerHTML = createComparatorPanelMarkup(label);
 
   const previewEl = root.querySelector('[data-role="preview"]');
   const previewLogoEl = root.querySelector('[data-role="preview-logo"]');
