@@ -24,3 +24,14 @@ test('admin palette previews render compact color swatches', () => {
   assert.match(previewBlock, /display:\s*flex/);
   assert.match(swatchBlock, /border-radius:\s*999px/);
 });
+
+test('admin visit analytics chart uses stable accessible bars', () => {
+  const metricsBlock = cssBlock('.admin-visits-metrics');
+  const chartBlock = cssBlock('.admin-visits-chart');
+  const barBlock = cssBlock('.admin-visits-chart__bar');
+
+  assert.match(metricsBlock, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(chartBlock, /display:\s*grid/);
+  assert.match(barBlock, /min-height:\s*8px/);
+  assert.match(barBlock, /background:\s*linear-gradient/);
+});

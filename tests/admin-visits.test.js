@@ -97,5 +97,5 @@ test('createVisitAnalyticsCard renders an empty state without visits', () => {
     recent: [],
   }, fakeDocument);
 
-  assert.match(collectText(card), /Aucune visite enregistree/);
+  assert.match(collectText(card), /Aucune visite enregistrée/);
 });

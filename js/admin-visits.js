@@ -37,7 +37,7 @@ export function createVisitAnalyticsCard(visitsData, doc = document) {
 
   const metricItems = [
     ['Total', formatVisitCount(visitsData.summary?.totalVisits || 0)],
-    ['Duree moyenne', formatDuration(visitsData.summary?.averageDurationMs || 0)],
+    ['Durée moyenne', formatDuration(visitsData.summary?.averageDurationMs || 0)],
     ['Actives', `${visitsData.summary?.activeNow || 0} active${(visitsData.summary?.activeNow || 0) > 1 ? 's' : ''}`],
   ];
 
@@ -51,7 +51,7 @@ export function createVisitAnalyticsCard(visitsData, doc = document) {
 
   const daily = visitsData.daily || [];
   if (!daily.length) {
-    appendText(card, 'p', 'admin-empty', 'Aucune visite enregistree.', doc);
+    appendText(card, 'p', 'admin-empty', 'Aucune visite enregistrée.', doc);
     return card;
   }
 
@@ -59,7 +59,7 @@ export function createVisitAnalyticsCard(visitsData, doc = document) {
   const chart = doc.createElement('div');
   chart.className = 'admin-visits-chart';
   chart.setAttribute('role', 'img');
-  chart.setAttribute('aria-label', 'Visites anonymes par jour et duree moyenne');
+  chart.setAttribute('aria-label', 'Visites anonymes par jour et durée moyenne');
   card.appendChild(chart);
 
   for (const day of daily) {
