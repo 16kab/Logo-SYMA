@@ -1,19 +1,33 @@
 import { LOGOS } from './logos.js';
-import { PALETTE_KEYS } from './palettes.js';
+import { PALETTES, PALETTE_KEYS } from './palettes.js';
 import { renderLogoThumbs } from './comparator-panel.js';
 import { renderPaletteTabs, renderSwatches } from './palette-controls.js';
 import { loadInlineSvg, recolorSvg } from './svg-loader.js';
 import { getIdentity, setName } from './identity.js';
 import {
   applyFinalChoicePalette,
-  createBlankFinalChoiceDraft,
   createDraftFromFinalChoice,
   getFinalChoicePayload,
   isCompleteFinalChoiceDraft,
 } from './final-choice-state.js';
 
+const STARTER_PALETTE_KEY = 'palette1';
+const STARTER_LOGO_ID = 'logo1';
+
 function findLogo(logoId) {
   return LOGOS.find((logo) => logo.id === logoId) || LOGOS[0];
+}
+
+function createStarterFinalChoiceDraft(name = '') {
+  const palette = PALETTES[STARTER_PALETTE_KEY];
+
+  return {
+    logoId: STARTER_LOGO_ID,
+    paletteKey: STARTER_PALETTE_KEY,
+    bgColor: palette.colors[0],
+    logoColor: '#ffffff',
+    name: name || '',
+  };
 }
 
 function clear(element) {
@@ -286,7 +300,7 @@ export function createFinalChoiceSection({
   async function openModal(choice) {
     const modalEl = ensureModal();
     const name = getIdentity(storage).name || '';
-    draft = choice ? createDraftFromFinalChoice(choice, name) : createBlankFinalChoiceDraft(name);
+    draft = choice ? createDraftFromFinalChoice(choice, name) : createStarterFinalChoiceDraft(name);
     modalEl.hidden = false;
     await renderModalControls();
   }

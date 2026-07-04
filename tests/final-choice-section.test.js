@@ -237,7 +237,10 @@ test('submits a complete modal draft and renders the saved final choice', async 
 
     const modal = body.querySelector('.final-choice-modal');
     assert.equal(modal.hidden, false);
-    assert.match(collectText(modal), /Selectionnez une palette, un logo et deux couleurs/);
+    assert.doesNotMatch(collectText(modal), /Selectionnez une palette, un logo et deux couleurs/);
+    assert.equal(modal.querySelector('.final-choice-modal__preview-surface').style.backgroundColor, '#18233f');
+    assert.equal(modal.querySelectorAll('.palette-tab')[0].getAttribute('aria-pressed'), 'true');
+    assert.equal(modal.querySelectorAll('.thumb-button')[0].getAttribute('aria-pressed'), 'true');
 
     await modal.querySelectorAll('.palette-tab')[0].click();
     await modal.querySelectorAll('.thumb-button')[0].click();
