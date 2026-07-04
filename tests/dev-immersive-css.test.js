@@ -62,3 +62,11 @@ test('immersive theme styles the submission bar', () => {
   assert.match(css, /\.dev-immersive\s+\.submission-bar\.is-visible\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.submission-bar__send\s*\{/);
 });
+
+test('immersive theme styles tabs, final choice, modal, and iconography state', () => {
+  assert.match(css, /\.dev-immersive\s+\.page-tabs\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.final-choice-section\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.final-choice-modal\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.iconography-empty\s*\{/);
+  assert.match(css, /body\.dev-immersive\[data-active-tab="iconography"\]\s+#submission-bar-root/);
+});
