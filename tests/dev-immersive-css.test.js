@@ -16,6 +16,12 @@ test('index enables the immersive dark theme by default', () => {
   assert.match(index, /data-experience="immersive-gallery"/);
 });
 
+test('index includes final choice and iconography roots', () => {
+  assert.match(index, /id="final-choice-root"/);
+  assert.match(index, /id="final-choice-action-root"/);
+  assert.match(index, /class="iconography-empty"/);
+});
+
 test('dev immersive stylesheet is scoped to the local theme class', () => {
   assert.match(css, /\.dev-immersive\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.comparator-panel/);

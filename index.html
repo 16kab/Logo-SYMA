@@ -35,20 +35,71 @@
   </header>
 
   <main>
-    <section class="intro" aria-labelledby="intro-title">
-      <p class="eyebrow">Proposition d'identité</p>
-      <h2 class="intro-title" id="intro-title">Sept directions de logo pour <span class="intro-accent">SYMA</span></h2>
-      <p class="intro-lede">Comparez les directions, projetez-les sur les couleurs de la marque, puis classez vos préférées.</p>
+    <nav class="page-tabs" aria-label="Sections SYMA">
+      <div class="page-tabs__list" role="tablist">
+        <button
+          class="page-tabs__tab is-active"
+          id="tab-logo-palette"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="tabpanel-logo-palette"
+          data-tab-target="tabpanel-logo-palette"
+          data-tab-name="logo"
+        >Logo & palette</button>
+        <button
+          class="page-tabs__tab"
+          id="tab-iconographie"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tabpanel-iconographie"
+          data-tab-target="tabpanel-iconographie"
+          data-tab-name="iconography"
+        >Iconographie</button>
+      </div>
+    </nav>
+
+    <section
+      class="tab-panel tab-panel--logo"
+      id="tabpanel-logo-palette"
+      role="tabpanel"
+      aria-labelledby="tab-logo-palette"
+    >
+      <section class="intro" aria-labelledby="intro-title">
+        <p class="eyebrow">Proposition d'identité</p>
+        <h2 class="intro-title" id="intro-title">Sept directions de logo pour <span class="intro-accent">SYMA</span></h2>
+        <p class="intro-lede">Comparez les directions, projetez-les sur les couleurs de la marque, puis classez vos préférées.</p>
+      </section>
+
+      <div id="final-choice-root"></div>
+
+      <section class="comparator-section" aria-labelledby="comparator-title">
+        <div class="section-heading section-heading--with-action">
+          <div>
+            <p class="eyebrow">Comparateur</p>
+            <h2 id="comparator-title">Comparez les directions de logo</h2>
+          </div>
+          <div id="final-choice-action-root"></div>
+        </div>
+        <div class="comparator" aria-label="Comparateur de logos">
+          <div class="comparator-panel" id="panel-left"></div>
+          <div class="comparator-panel" id="panel-right"></div>
+        </div>
+      </section>
     </section>
 
-    <section class="comparator-section" aria-labelledby="comparator-title">
-      <div class="section-heading">
-        <p class="eyebrow">Comparateur</p>
-        <h2 id="comparator-title">Comparez les directions de logo</h2>
-      </div>
-      <div class="comparator" aria-label="Comparateur de logos">
-        <div class="comparator-panel" id="panel-left"></div>
-        <div class="comparator-panel" id="panel-right"></div>
+    <section
+      class="tab-panel tab-panel--iconography"
+      id="tabpanel-iconographie"
+      role="tabpanel"
+      aria-labelledby="tab-iconographie"
+      hidden
+    >
+      <div class="iconography-empty">
+        <p class="eyebrow">Iconographie</p>
+        <h2>La sélection iconographique arrive ensuite</h2>
+        <p>Ce second vote sera activé quand les pistes visuelles seront prêtes.</p>
       </div>
     </section>
   </main>

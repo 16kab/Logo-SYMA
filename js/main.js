@@ -2,10 +2,12 @@ import { createComparatorPanel } from './comparator-panel.js';
 import { createVotesSection } from './votes-section.js';
 import { activateDevTheme } from './dev-theme.js';
 import { startVisitTracking } from './visit-tracker.js';
+import { createPageTabs } from './page-tabs.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   startVisitTracking();
   activateDevTheme();
+  createPageTabs();
 
   createComparatorPanel(document.getElementById('panel-left'), {
     paletteKey: 'palette1',
