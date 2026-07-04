@@ -2,6 +2,7 @@ import { LOGOS } from './logos.js';
 import { PALETTES, PALETTE_KEYS } from './palettes.js';
 import { formatPaletteLabel } from './admin-format.js';
 import { createVisitAnalyticsCard } from './admin-visits.js';
+import { createFinalChoiceAdminCard } from './admin-final-choice.js';
 
 const TOKEN_STORAGE_KEY = 'syma_admin_token';
 
@@ -236,9 +237,11 @@ export function renderVotes(votesData, { reset = true } = {}) {
   container.appendChild(voterBlock);
 }
 
-export function renderDashboard({ votesData, visitsData }) {
+export function renderDashboard({ votesData, visitsData, finalChoiceData }) {
   const container = document.getElementById('votes-summary');
   container.innerHTML = '';
+
+  container.appendChild(createFinalChoiceAdminCard(finalChoiceData || { finalChoice: null }));
 
   if (visitsData) {
     container.appendChild(createVisitAnalyticsCard(visitsData));
@@ -255,14 +258,17 @@ async function fetchAdminJson(path, token) {
 async function showDashboard(token) {
   let votesData;
   let visitsData = null;
+  let finalChoiceData = { finalChoice: null };
   try {
-    const [votesResult, visitsResult] = await Promise.allSettled([
+    const [votesResult, visitsResult, finalChoiceResult] = await Promise.allSettled([
       fetchAdminJson('/api/votes', token),
       fetchAdminJson('/api/visits', token),
+      fetch('/api/final-choice'),
     ]);
 
     const votesResponse = votesResult.status === 'fulfilled' ? votesResult.value : null;
     const visitsResponse = visitsResult.status === 'fulfilled' ? visitsResult.value : null;
+    const finalChoiceResponse = finalChoiceResult.status === 'fulfilled' ? finalChoiceResult.value : null;
 
     if (votesResponse?.status === 401 || visitsResponse?.status === 401) {
       sessionStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -285,6 +291,14 @@ async function showDashboard(token) {
         visitsData = null;
       }
     }
+
+    if (finalChoiceResponse?.ok) {
+      try {
+        finalChoiceData = await finalChoiceResponse.json();
+      } catch (error) {
+        finalChoiceData = { finalChoice: null };
+      }
+    }
   } catch (error) {
     document.getElementById('login-section').hidden = false;
     document.getElementById('dashboard-section').hidden = true;
@@ -294,7 +308,7 @@ async function showDashboard(token) {
 
   document.getElementById('login-section').hidden = true;
   document.getElementById('dashboard-section').hidden = false;
-  renderDashboard({ votesData, visitsData });
+  renderDashboard({ votesData, visitsData, finalChoiceData });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -258,7 +258,7 @@ test('renderVotes shows a voter message when present', async () => {
   assert.match(text, /J'adore le logo 3/);
 });
 
-test('renderDashboard prepends visit analytics before vote summaries', async () => {
+test('renderDashboard prepends final choice and visit analytics before vote summaries', async () => {
   const { renderDashboard } = await loadAdminModule();
   const container = createFakeElement();
   const originalDocument = globalThis.document;
@@ -271,6 +271,7 @@ test('renderDashboard prepends visit analytics before vote summaries', async () 
 
   try {
     renderDashboard({
+      finalChoiceData: { finalChoice: null },
       visitsData: {
         summary: { totalVisits: 3, averageDurationMs: 30000, activeNow: 1 },
         daily: [{ date: '2026-07-03', visits: 3, averageDurationMs: 30000 }],
@@ -287,10 +288,12 @@ test('renderDashboard prepends visit analytics before vote summaries', async () 
   }
 
   const text = collectText(container);
+  assert.match(text, /Choix final/);
   assert.match(text, /Visites du site/);
   assert.match(text, /3 visites/);
   assert.match(text, /Palettes préférées/);
-  assert.equal(container.children[0].className, 'admin-card admin-visits-card');
+  assert.equal(container.children[0].className, 'admin-card admin-final-choice-card');
+  assert.equal(container.children[1].className, 'admin-card admin-visits-card');
 });
 
 test('dashboard still renders votes when visit analytics request fails', async () => {
@@ -313,6 +316,16 @@ test('dashboard still renders votes when visit analytics request fails', async (
     removeItem() {},
   };
   globalThis.fetch = async (path) => {
+    if (path === '/api/final-choice') {
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return { finalChoice: null };
+        },
+      };
+    }
+
     if (path === '/api/votes') {
       return {
         ok: true,

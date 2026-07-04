@@ -35,3 +35,13 @@ test('admin visit analytics chart uses stable accessible bars', () => {
   assert.match(barBlock, /min-height:\s*8px/);
   assert.match(barBlock, /background:\s*linear-gradient/);
 });
+
+test('admin final choice card has stable preview and metadata layout', () => {
+  const cardBlock = cssBlock('.admin-final-choice-card');
+  const previewBlock = cssBlock('.admin-final-choice__preview');
+  const metaBlock = cssBlock('.admin-final-choice__meta');
+
+  assert.match(cardBlock, /display:\s*grid/);
+  assert.match(previewBlock, /min-height:\s*180px/);
+  assert.match(metaBlock, /grid-template-columns:\s*repeat/);
+});

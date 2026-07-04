@@ -8,6 +8,7 @@ import { createVotesHandler } from './api/votes.js';
 import { createVisitHandler } from './api/visit.js';
 import { createVisitsHandler } from './api/visits.js';
 import { createAdminLoginHandler } from './api/admin-login.js';
+import { createFinalChoiceHandler } from './api/final-choice.js';
 
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
@@ -20,6 +21,7 @@ const routes = {
   '/api/votes': createVotesHandler(kv, getAdminPassword),
   '/api/visit': createVisitHandler(kv),
   '/api/visits': createVisitsHandler(kv, getAdminPassword),
+  '/api/final-choice': createFinalChoiceHandler(kv),
   '/api/admin-login': createAdminLoginHandler(getAdminPassword),
 };
 
