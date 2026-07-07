@@ -213,7 +213,7 @@ test('renderVotes shows visual palettes and each voter logo ranking with images'
   const voterLogoItems = voterCards[0].querySelectorAll('.admin-logo-ranking__item');
 
   assert.equal(paletteCards.length, 2);
-  assert.equal(paletteCards[0].querySelectorAll('.admin-palette-preview__swatch').length, 7);
+  assert.equal(paletteCards[0].querySelectorAll('.admin-palette-preview__swatch').length, 8);
   assert.match(text, /Votes par personne/);
   assert.match(text, /Alexis/);
   assert.match(text, /Palette 2/);
