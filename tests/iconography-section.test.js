@@ -115,6 +115,10 @@ function collectText(element) {
   return [element.textContent, ...element.children.map(collectText)].filter(Boolean).join(' ');
 }
 
+function childIndexByClass(element, className) {
+  return element.children.findIndex((child) => child.className.split(/\s+/).includes(className));
+}
+
 async function withFakeDocument(run) {
   const originalDocument = globalThis.document;
   const body = createFakeElement('body');
@@ -163,6 +167,7 @@ test('renders iconography cards from the catalog and recolors each SVG', async (
 test('approving an iconography item shows the global validated state and modifier action', async () => {
   await withFakeDocument(async () => {
     const root = createFakeElement();
+    let svgLoadCount = 0;
     const section = createIconographySection({
       root,
       fetcher: async (path, options = {}) => {
@@ -182,16 +187,21 @@ test('approving an iconography item shows the global validated state and modifie
         }
         return { ok: true, async json() { return { iconography: { items: {}, requests: [] } }; } };
       },
-      loadSvg: createSvgLoader(),
+      loadSvg: async (url, container) => {
+        svgLoadCount++;
+        return createSvgLoader()(url, container);
+      },
     });
 
     await section.load();
+    assert.equal(svgLoadCount, 22);
     await root.querySelector('[data-action="approve"]').click();
 
     const firstCard = root.querySelector('.iconography-card');
     assert.match(firstCard.className, /is-approved/);
     assert.match(collectText(firstCard), /Validé/);
     assert.match(collectText(firstCard), /Modifier/);
+    assert.equal(svgLoadCount, 22);
   });
 });
 
@@ -294,6 +304,9 @@ test('adding a free request appends a simple titled card', async () => {
     root.querySelector('[data-role="request-title"]').value = 'Tasse vue face';
     await root.querySelector('[data-role="add-request"]').click();
 
+    const sectionRoot = root.querySelector('.iconography-section');
+    assert.equal(childIndexByClass(sectionRoot, 'iconography-requests'), 2);
+    assert.ok(childIndexByClass(sectionRoot, 'iconography-requests') < childIndexByClass(sectionRoot, 'iconography-grid'));
     assert.match(collectText(root), /Demandes ajoutées/);
     assert.match(collectText(root), /Tasse vue face/);
   });

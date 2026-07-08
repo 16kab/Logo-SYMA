@@ -383,7 +383,6 @@ main {
 }
 
 .iconography-add-request__button,
-.iconography-card__secondary,
 .iconography-card__feedback,
 .iconography-feedback-modal__primary,
 .iconography-feedback-modal__secondary {
@@ -414,6 +413,10 @@ main {
   transition: border-color var(--fast), box-shadow var(--fast), background var(--fast);
 }
 
+.iconography-card {
+  position: relative;
+}
+
 .iconography-card.is-approved {
   border-color: var(--success);
   box-shadow: inset 0 0 0 2px rgba(36, 92, 59, 0.12);
@@ -432,6 +435,7 @@ main {
 }
 
 .iconography-card__title {
+  padding-right: 7rem;
   font-size: 0.95rem;
   font-weight: 750;
 }
@@ -462,12 +466,13 @@ main {
 }
 
 .iconography-card__actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
 }
 
 .iconography-card__icon-action {
-  width: 44px;
+  width: 100%;
   height: 44px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -484,10 +489,41 @@ main {
 }
 
 .iconography-card__state {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
   margin: 0;
-  font-size: 0.82rem;
-  font-weight: 800;
+  border-radius: 999px;
+  padding: 0.24rem 0.52rem;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 0.68rem;
+  font-weight: 750;
   text-transform: uppercase;
+}
+
+.iconography-card.is-approved .iconography-card__state {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.iconography-card.is-rejected .iconography-card__state {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.iconography-card__secondary {
+  width: max-content;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .iconography-requests {

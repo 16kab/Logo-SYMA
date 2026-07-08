@@ -43,6 +43,8 @@ export function createIconographySection({
   let state = normalizeState();
   let modal = null;
   let activeFeedbackItemId = null;
+  const cardsById = new Map();
+  let requestsSection = null;
 
   function setStatus(message, isError = false) {
     const status = root.querySelector('[data-role="iconography-status"]');
@@ -85,7 +87,8 @@ export function createIconographySection({
 
     const data = await response.json();
     state = normalizeState(data.iconography);
-    await render();
+    updateCards();
+    renderRequests();
     return true;
   }
 
@@ -190,32 +193,21 @@ export function createIconographySection({
     if (saved) closeFeedbackModal();
   }
 
-  async function renderCard(item) {
+  function renderCardDecision(card, item) {
     const itemState = state.items[item.id] || null;
-    const card = document.createElement('article');
     card.className = 'iconography-card';
-    if (itemState?.status === 'approved') card.classList.add('is-approved');
-    if (itemState?.status === 'rejected') card.classList.add('is-rejected');
+    if (itemState?.status === 'approved') card.className += ' is-approved';
+    if (itemState?.status === 'rejected') card.className += ' is-rejected';
 
-    const title = createText('h3', 'iconography-card__title', item.title);
-    const visual = document.createElement('div');
-    visual.className = 'iconography-card__visual';
-    const decision = document.createElement('div');
-    decision.className = 'iconography-card__decision';
-
-    card.appendChild(title);
-    card.appendChild(visual);
-    card.appendChild(decision);
-
-    const svg = await loadSvg(item.src, visual);
-    recolor(svg, ICON_COLOR);
+    const decision = card.querySelector('.iconography-card__decision');
+    clear(decision);
 
     if (itemState?.status === 'approved') {
       decision.appendChild(createText('p', 'iconography-card__state', 'Validé'));
       const reset = createButton('Modifier', 'iconography-card__secondary', { action: 'reset' });
       reset.addEventListener('click', () => postAction({ action: 'reset', itemId: item.id }));
       decision.appendChild(reset);
-      return card;
+      return;
     }
 
     if (itemState?.status === 'rejected') {
@@ -226,7 +218,7 @@ export function createIconographySection({
       reset.addEventListener('click', () => postAction({ action: 'reset', itemId: item.id }));
       decision.appendChild(view);
       decision.appendChild(reset);
-      return card;
+      return;
     }
 
     const actions = document.createElement('div');
@@ -244,7 +236,33 @@ export function createIconographySection({
     actions.appendChild(approve);
     actions.appendChild(reject);
     decision.appendChild(actions);
+  }
+
+  async function renderCard(item) {
+    const card = document.createElement('article');
+    card.className = 'iconography-card';
+
+    const title = createText('h3', 'iconography-card__title', item.title);
+    const visual = document.createElement('div');
+    visual.className = 'iconography-card__visual';
+    const decision = document.createElement('div');
+    decision.className = 'iconography-card__decision';
+
+    card.appendChild(title);
+    card.appendChild(visual);
+    card.appendChild(decision);
+
+    const svg = await loadSvg(item.src, visual);
+    recolor(svg, ICON_COLOR);
+    renderCardDecision(card, item);
     return card;
+  }
+
+  function updateCards() {
+    for (const item of ICONOGRAPHY_ITEMS) {
+      const card = cardsById.get(item.id);
+      if (card) renderCardDecision(card, item);
+    }
   }
 
   function renderRequestForm(section) {
@@ -275,12 +293,14 @@ export function createIconographySection({
     section.appendChild(form);
   }
 
-  function renderRequests(section) {
+  function renderRequests() {
+    if (!requestsSection) return;
+    clear(requestsSection);
+    requestsSection.hidden = state.requests.length === 0;
+
     if (!state.requests.length) return;
 
-    const requests = document.createElement('section');
-    requests.className = 'iconography-requests';
-    requests.appendChild(createText('h3', 'iconography-requests__title', 'Demandes ajoutées'));
+    requestsSection.appendChild(createText('h3', 'iconography-requests__title', 'Demandes ajoutées'));
 
     const list = document.createElement('div');
     list.className = 'iconography-requests__list';
@@ -291,12 +311,13 @@ export function createIconographySection({
       list.appendChild(card);
     }
 
-    requests.appendChild(list);
-    section.appendChild(requests);
+    requestsSection.appendChild(list);
   }
 
   async function render() {
     clear(root);
+    cardsById.clear();
+    requestsSection = null;
 
     const section = document.createElement('section');
     section.className = 'iconography-section';
@@ -316,6 +337,11 @@ export function createIconographySection({
 
     renderRequestForm(section);
 
+    requestsSection = document.createElement('section');
+    requestsSection.className = 'iconography-requests';
+    section.appendChild(requestsSection);
+    renderRequests();
+
     const status = createText('p', 'iconography-section__status', '');
     status.setAttribute('data-role', 'iconography-status');
     status.setAttribute('role', 'status');
@@ -324,11 +350,12 @@ export function createIconographySection({
     const grid = document.createElement('div');
     grid.className = 'iconography-grid';
     for (const item of ICONOGRAPHY_ITEMS) {
-      grid.appendChild(await renderCard(item));
+      const card = await renderCard(item);
+      cardsById.set(item.id, card);
+      grid.appendChild(card);
     }
     section.appendChild(grid);
 
-    renderRequests(section);
     root.appendChild(section);
   }
 
