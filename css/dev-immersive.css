@@ -917,32 +917,177 @@
   color: var(--muted);
 }
 
-.dev-immersive .iconography-empty {
-  min-height: min(520px, 58vh);
+.dev-immersive .iconography-section {
   display: grid;
-  align-content: center;
-  gap: 0.8rem;
-  border: 1px solid rgba(202, 211, 225, 0.14);
-  border-radius: 22px;
-  padding: clamp(2rem, 6vw, 5rem);
-  background: rgba(255, 255, 255, 0.035);
+  gap: 1.25rem;
 }
 
-.dev-immersive .iconography-empty h2,
-.dev-immersive .iconography-empty p {
+.dev-immersive .iconography-section__header h2 {
   margin: 0;
-}
-
-.dev-immersive .iconography-empty h2 {
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: clamp(1.9rem, 3vw, 3.2rem);
   font-weight: 600;
   letter-spacing: 0;
 }
 
-.dev-immersive .iconography-empty p:not(.eyebrow) {
+.dev-immersive .iconography-section__lede,
+.dev-immersive .iconography-section__status,
+.dev-immersive .iconography-feedback-modal__status {
+  margin: 0;
   color: var(--muted);
-  font-size: 1rem;
+}
+
+.dev-immersive .iconography-section__status.is-error,
+.dev-immersive .iconography-feedback-modal__status[role="alert"] {
+  color: var(--danger);
+}
+
+.dev-immersive .iconography-add-request {
+  padding: 1rem;
+  border: 1px solid rgba(202, 211, 225, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dev-immersive .iconography-add-request__field,
+.dev-immersive .iconography-feedback-modal__field {
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+.dev-immersive .iconography-add-request__input,
+.dev-immersive .iconography-feedback-modal__input {
+  border-color: rgba(202, 211, 225, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.dev-immersive .iconography-add-request__input::placeholder {
+  color: rgba(174, 182, 197, 0.55);
+}
+
+.dev-immersive .iconography-add-request__button,
+.dev-immersive .iconography-feedback-modal__primary {
+  border: none;
+  background: var(--brand-accent);
+  color: #0d1016;
+}
+
+.dev-immersive .iconography-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.dev-immersive .iconography-card,
+.dev-immersive .iconography-request-card {
+  border-color: rgba(202, 211, 225, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
+.dev-immersive .iconography-card.is-approved {
+  border-color: rgba(159, 178, 156, 0.95);
+  background: rgba(159, 178, 156, 0.1);
+}
+
+.dev-immersive .iconography-card.is-rejected {
+  border-color: rgba(215, 125, 114, 0.95);
+  background: rgba(215, 125, 114, 0.1);
+}
+
+.dev-immersive .iconography-card__title,
+.dev-immersive .iconography-requests__title,
+.dev-immersive .iconography-request-card__title {
+  color: var(--text);
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+.dev-immersive .iconography-card__visual {
+  border: 1px solid rgba(16, 19, 24, 0.08);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.04);
+}
+
+.dev-immersive .iconography-card__state {
+  color: var(--text);
+  letter-spacing: 0.08em;
+}
+
+.dev-immersive .iconography-card__icon-action,
+.dev-immersive .iconography-card__secondary,
+.dev-immersive .iconography-card__feedback,
+.dev-immersive .iconography-feedback-modal__secondary {
+  border-color: rgba(202, 211, 225, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.dev-immersive .iconography-card__icon-action:hover,
+.dev-immersive .iconography-card__secondary:hover,
+.dev-immersive .iconography-card__feedback:hover,
+.dev-immersive .iconography-feedback-modal__secondary:hover {
+  border-color: rgba(202, 211, 225, 0.35);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.dev-immersive .iconography-card__icon-action--approve {
+  color: var(--success);
+}
+
+.dev-immersive .iconography-card__icon-action--reject {
+  color: var(--danger);
+}
+
+.dev-immersive .iconography-requests {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.dev-immersive .iconography-feedback-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.dev-immersive .iconography-feedback-modal[hidden] {
+  display: none;
+}
+
+.dev-immersive .iconography-feedback-modal__backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.dev-immersive .iconography-feedback-modal__dialog {
+  border-color: rgba(202, 211, 225, 0.18);
+  background: #10151f;
+  color: var(--text);
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.6);
+}
+
+.dev-immersive .iconography-feedback-modal__header,
+.dev-immersive .iconography-feedback-modal__footer {
+  border-color: rgba(202, 211, 225, 0.12);
+}
+
+.dev-immersive .iconography-feedback-modal__header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.dev-immersive .iconography-feedback-modal__close {
+  border-color: rgba(202, 211, 225, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
 }
 
 body.dev-immersive[data-active-tab="iconography"] #submission-bar-root {
@@ -953,9 +1098,16 @@ body.dev-immersive[data-active-tab="iconography"] #submission-bar-root {
   .dev-immersive .section-heading--with-action,
   .dev-immersive .final-choice-section__header,
   .dev-immersive .final-choice-modal__header,
-  .dev-immersive .final-choice-modal__footer {
+  .dev-immersive .final-choice-modal__footer,
+  .dev-immersive .iconography-section__header,
+  .dev-immersive .iconography-feedback-modal__header,
+  .dev-immersive .iconography-feedback-modal__footer {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .dev-immersive .iconography-add-request {
+    grid-template-columns: 1fr;
   }
 
   .dev-immersive .final-choice-variants,

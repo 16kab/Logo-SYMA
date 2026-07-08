@@ -4,6 +4,7 @@ import { activateDevTheme } from './dev-theme.js';
 import { startVisitTracking } from './visit-tracker.js';
 import { createPageTabs } from './page-tabs.js';
 import { createFinalChoiceSection } from './final-choice-section.js';
+import { createIconographySection } from './iconography-section.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   startVisitTracking();
@@ -12,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   createFinalChoiceSection({
     root: document.getElementById('final-choice-root'),
     actionRoot: document.getElementById('final-choice-action-root'),
+  }).load();
+  createIconographySection({
+    root: document.getElementById('iconography-root'),
   }).load();
 
   createComparatorPanel(document.getElementById('panel-left'), {
