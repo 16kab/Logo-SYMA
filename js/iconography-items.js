@@ -1,0 +1,26 @@
+export const ICONOGRAPHY_ITEMS = [
+  { id: 'blobs', title: 'Blobs', src: 'SVG/iconographie/blobs.svg' },
+  { id: 'bouquet', title: 'Bouquet', src: 'SVG/iconographie/bouquet.svg' },
+  { id: 'cafe-agite', title: 'Cafe agite', src: 'SVG/iconographie/cafe-agite.svg' },
+  { id: 'cafe-vue-haut', title: 'Cafe vue haut', src: 'SVG/iconographie/cafe-vue-haut.svg' },
+  { id: 'chaise', title: 'Chaise', src: 'SVG/iconographie/chaise.svg' },
+  { id: 'croissant', title: 'Croissant', src: 'SVG/iconographie/croissant.svg' },
+  { id: 'etoiles', title: 'Etoiles', src: 'SVG/iconographie/etoiles.svg' },
+  { id: 'fleurs', title: 'Fleurs', src: 'SVG/iconographie/fleurs.svg' },
+  { id: 'iphone-3-4', title: 'Iphone 3/4', src: 'SVG/iconographie/iphone-3-4.svg' },
+  { id: 'iphone', title: 'Iphone', src: 'SVG/iconographie/iphone.svg' },
+  { id: 'laptop-3-4', title: 'Laptop 3/4', src: 'SVG/iconographie/laptop-3-4.svg' },
+  { id: 'laptop', title: 'Laptop', src: 'SVG/iconographie/laptop.svg' },
+  { id: 'main-cafe', title: 'Main cafe', src: 'SVG/iconographie/main-cafe.svg' },
+  { id: 'main-machine', title: 'Main machine', src: 'SVG/iconographie/main-machine.svg' },
+  { id: 'p-et-s-assises', title: 'P et S assises', src: 'SVG/iconographie/p-et-s-assises.svg' },
+  { id: 'p-et-s-plan-large', title: 'P et S plan large', src: 'SVG/iconographie/p-et-s-plan-large.svg' },
+  { id: 'p-et-s', title: 'P et S', src: 'SVG/iconographie/p-et-s.svg' },
+  { id: 'perrine-cc', title: 'Perrine cc', src: 'SVG/iconographie/perrine-cc.svg' },
+  { id: 'perrine-tel', title: 'Perrine tel', src: 'SVG/iconographie/perrine-tel.svg' },
+  { id: 'pot-de-fleurs', title: 'Pot de fleurs', src: 'SVG/iconographie/pot-de-fleurs.svg' },
+  { id: 'sonia-cc', title: 'Sonia cc', src: 'SVG/iconographie/sonia-cc.svg' },
+  { id: 'sonia-tel', title: 'Sonia tel', src: 'SVG/iconographie/sonia-tel.svg' },
+];
+
+export const ICONOGRAPHY_ITEM_IDS = ICONOGRAPHY_ITEMS.map((item) => item.id);
