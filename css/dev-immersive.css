@@ -1204,18 +1204,22 @@
 
 .dev-immersive .typography-layout {
   display: grid;
-  grid-template-columns: minmax(250px, 340px) minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: 1.1rem;
   align-items: start;
 }
 
 .dev-immersive .typography-controls {
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
   padding: 1rem;
   border: 1px solid rgba(202, 211, 225, 0.14);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.dev-immersive .typography-control-group__label {
+  color: var(--text);
 }
 
 .dev-immersive .typography-field {
@@ -1229,12 +1233,29 @@
   color: var(--text);
 }
 
+.dev-immersive .typography-field__select option {
+  background: #ffffff;
+  color: #18233f;
+}
+
 .dev-immersive .typography-preview {
-  border: 1px solid rgba(16, 19, 24, 0.08);
-  border-radius: 14px;
+  border: 1px solid rgba(202, 211, 225, 0.14);
+  border-radius: 18px;
+  background: rgba(24, 35, 63, 0.72);
+  color: #ffffff;
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
+}
+
+.dev-immersive .typography-preview__canvas {
   background: #ffffff;
   color: #18233f;
   box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.04);
+}
+
+.dev-immersive .typography-preview__font-pill {
+  border-color: rgba(202, 211, 225, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(243, 246, 251, 0.84);
 }
 
 body.dev-immersive[data-active-tab="iconography"] #submission-bar-root {
@@ -1264,6 +1285,10 @@ body.dev-immersive[data-active-tab="typography"] #submission-bar-root {
   }
 
   .dev-immersive .typography-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dev-immersive .typography-control-group__row {
     grid-template-columns: 1fr;
   }
 

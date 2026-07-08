@@ -134,8 +134,11 @@ test('renders typography selectors and applies saved fonts to the live preview',
           return {
             typography: {
               headingFont: 'Syne',
+              headingWeight: 600,
               bodyFont: 'Manrope',
+              bodyWeight: 500,
               decorationFont: 'Grandstander',
+              decorationWeight: 700,
               updatedAt: 123,
             },
           };
@@ -147,12 +150,20 @@ test('renders typography selectors and applies saved fonts to the live preview',
 
     assert.match(collectText(root), /Typographies/);
     assert.equal(root.querySelector('[data-role="heading-font"]').value, 'Syne');
+    assert.equal(root.querySelector('[data-role="heading-weight"]').value, '600');
     assert.equal(root.querySelector('[data-role="body-font"]').value, 'Manrope');
+    assert.equal(root.querySelector('[data-role="body-weight"]').value, '500');
     assert.equal(root.querySelector('[data-role="decoration-font"]').value, 'Grandstander');
+    assert.equal(root.querySelector('[data-role="decoration-weight"]').value, '700');
     assert.equal(root.querySelector('[data-role="preview-heading"]').style.fontFamily, '"Syne", sans-serif');
+    assert.equal(root.querySelector('[data-role="preview-heading"]').style.fontWeight, '600');
     assert.equal(root.querySelector('[data-role="preview-body"]').style.fontFamily, '"Manrope", sans-serif');
+    assert.equal(root.querySelector('[data-role="preview-body"]').style.fontWeight, '500');
     assert.equal(root.querySelector('[data-role="preview-decoration"]').style.fontFamily, '"Grandstander", sans-serif');
+    assert.equal(root.querySelector('[data-role="preview-decoration"]').style.fontWeight, '700');
     assert.equal(root.querySelector('[data-role="preview-decoration"]').hidden, false);
+    assert.ok(root.querySelector('.typography-preview__canvas'));
+    assert.equal(root.querySelectorAll('.typography-preview__font-pill').length, 3);
   });
 });
 
@@ -171,8 +182,11 @@ test('changing typography updates the preview and persists the shared selection'
               return {
                 typography: {
                   headingFont: 'Fredoka',
+                  headingWeight: 600,
                   bodyFont: 'Quicksand',
+                  bodyWeight: 400,
                   decorationFont: null,
+                  decorationWeight: 600,
                   updatedAt: 456,
                 },
               };
@@ -182,7 +196,16 @@ test('changing typography updates the preview and persists the shared selection'
         return {
           ok: true,
           async json() {
-            return { typography: { headingFont: 'Outfit', bodyFont: 'Quicksand', decorationFont: null } };
+            return {
+              typography: {
+                headingFont: 'Outfit',
+                headingWeight: 700,
+                bodyFont: 'Quicksand',
+                bodyWeight: 400,
+                decorationFont: null,
+                decorationWeight: 600,
+              },
+            };
           },
         };
       },
@@ -191,14 +214,20 @@ test('changing typography updates the preview and persists the shared selection'
     await section.load();
     const headingSelect = root.querySelector('[data-role="heading-font"]');
     headingSelect.value = 'Fredoka';
+    const headingWeight = root.querySelector('[data-role="heading-weight"]');
+    headingWeight.value = '600';
     await headingSelect.dispatchEvent({ type: 'change' });
 
     assert.deepEqual(payloads, [{
       headingFont: 'Fredoka',
+      headingWeight: 600,
       bodyFont: 'Quicksand',
+      bodyWeight: 400,
       decorationFont: null,
+      decorationWeight: 600,
     }]);
     assert.equal(root.querySelector('[data-role="preview-heading"]').style.fontFamily, '"Fredoka", sans-serif');
+    assert.equal(root.querySelector('[data-role="preview-heading"]').style.fontWeight, '600');
     assert.equal(root.querySelector('[data-role="preview-decoration"]').hidden, true);
   });
 });

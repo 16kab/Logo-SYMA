@@ -40,3 +40,10 @@ test('iconography decision controls use full-width actions and link-style edit',
   assert.match(stateBlock, /padding:\s*0\.16rem\s+0\.42rem/);
   assert.match(stateBlock, /font-size:\s*0\.58rem/);
 });
+
+test('typography dropdown options stay readable in native select popups', () => {
+  const optionBlock = cssBlock('.typography-field__select option');
+
+  assert.match(optionBlock, /background:\s*#ffffff/);
+  assert.match(optionBlock, /color:\s*#18233f/);
+});

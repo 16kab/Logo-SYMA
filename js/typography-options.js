@@ -17,10 +17,20 @@ export const DECORATION_FONTS = [
   { value: 'Darumadrop One', label: 'Darumadrop One' },
 ];
 
+export const FONT_WEIGHT_OPTIONS = [
+  { value: 400, label: 'Regular 400' },
+  { value: 500, label: 'Medium 500' },
+  { value: 600, label: 'Semi-bold 600' },
+  { value: 700, label: 'Bold 700' },
+];
+
 export const DEFAULT_TYPOGRAPHY = {
   headingFont: 'Outfit',
+  headingWeight: 700,
   bodyFont: 'Quicksand',
+  bodyWeight: 400,
   decorationFont: null,
+  decorationWeight: 600,
 };
 
 export function isHeadingFont(value) {
@@ -33,4 +43,8 @@ export function isBodyFont(value) {
 
 export function isDecorationFont(value) {
   return value === null || DECORATION_FONTS.some((font) => font.value === value);
+}
+
+export function isFontWeight(value) {
+  return FONT_WEIGHT_OPTIONS.some((weight) => weight.value === Number(value));
 }

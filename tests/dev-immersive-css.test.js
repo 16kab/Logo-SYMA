@@ -72,6 +72,7 @@ test('immersive theme styles tabs, final choice, modal, iconography, and typogra
   assert.match(css, /\.dev-immersive\s+\.iconography-section\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.typography-section\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.typography-preview\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.typography-field__select\s+option\s*\{/);
   assert.match(css, /body\.dev-immersive\[data-active-tab="iconography"\]\s+#submission-bar-root/);
   assert.match(css, /body\.dev-immersive\[data-active-tab="typography"\]\s+#submission-bar-root/);
 });

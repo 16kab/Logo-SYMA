@@ -2,6 +2,7 @@ import {
   DEFAULT_TYPOGRAPHY,
   isBodyFont,
   isDecorationFont,
+  isFontWeight,
   isHeadingFont,
 } from '../../js/typography-options.js';
 
@@ -11,10 +12,18 @@ export const TYPOGRAPHY_FIELD = 'selection';
 function cloneSelection(selection) {
   return {
     headingFont: selection?.headingFont || DEFAULT_TYPOGRAPHY.headingFont,
+    headingWeight: normalizeWeight(selection?.headingWeight, DEFAULT_TYPOGRAPHY.headingWeight),
     bodyFont: selection?.bodyFont || DEFAULT_TYPOGRAPHY.bodyFont,
+    bodyWeight: normalizeWeight(selection?.bodyWeight, DEFAULT_TYPOGRAPHY.bodyWeight),
     decorationFont: selection?.decorationFont || null,
+    decorationWeight: normalizeWeight(selection?.decorationWeight, DEFAULT_TYPOGRAPHY.decorationWeight),
     ...(selection?.updatedAt ? { updatedAt: selection.updatedAt } : {}),
   };
+}
+
+function normalizeWeight(value, fallback) {
+  const weight = Number(value ?? fallback);
+  return isFontWeight(weight) ? weight : fallback;
 }
 
 function normalizePayload(payload) {
@@ -22,13 +31,19 @@ function normalizePayload(payload) {
 
   const selection = {
     headingFont: payload.headingFont,
+    headingWeight: normalizeWeight(payload.headingWeight, DEFAULT_TYPOGRAPHY.headingWeight),
     bodyFont: payload.bodyFont,
+    bodyWeight: normalizeWeight(payload.bodyWeight, DEFAULT_TYPOGRAPHY.bodyWeight),
     decorationFont: payload.decorationFont || null,
+    decorationWeight: normalizeWeight(payload.decorationWeight, DEFAULT_TYPOGRAPHY.decorationWeight),
   };
 
   if (!isHeadingFont(selection.headingFont)) return null;
+  if (!isFontWeight(payload.headingWeight ?? selection.headingWeight)) return null;
   if (!isBodyFont(selection.bodyFont)) return null;
+  if (!isFontWeight(payload.bodyWeight ?? selection.bodyWeight)) return null;
   if (!isDecorationFont(selection.decorationFont)) return null;
+  if (!isFontWeight(payload.decorationWeight ?? selection.decorationWeight)) return null;
   return selection;
 }
 
