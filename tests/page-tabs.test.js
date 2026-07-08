@@ -25,15 +25,19 @@ function createElement(id) {
   };
 }
 
-test('index defines accessible logo and iconography tabs', () => {
+test('index defines accessible logo, iconography, and typography tabs', () => {
   const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
   assert.match(index, /role="tablist"/);
   assert.match(index, /id="tab-logo-palette"/);
   assert.match(index, /id="tab-iconographie"/);
+  assert.match(index, /id="tab-typographies"/);
   assert.match(index, /id="tabpanel-logo-palette"/);
   assert.match(index, /id="tabpanel-iconographie"/);
+  assert.match(index, /id="tabpanel-typographies"/);
   assert.match(index, /Iconographie/);
+  assert.match(index, /Typographies/);
+  assert.match(index, /Bagel\+Fat\+One/);
 });
 
 test('createPageTabs activates requested panel and updates body dataset', () => {
@@ -43,13 +47,17 @@ test('createPageTabs activates requested panel and updates body dataset', () => 
   const iconTab = createElement('tab-iconographie');
   iconTab.dataset.tabTarget = 'tabpanel-iconographie';
   iconTab.dataset.tabName = 'iconography';
+  const typeTab = createElement('tab-typographies');
+  typeTab.dataset.tabTarget = 'tabpanel-typographies';
+  typeTab.dataset.tabName = 'typography';
   const logoPanel = createElement('tabpanel-logo-palette');
   const iconPanel = createElement('tabpanel-iconographie');
+  const typePanel = createElement('tabpanel-typographies');
   const body = { dataset: {} };
 
   createPageTabs({
-    tabs: [logoTab, iconTab],
-    panels: [logoPanel, iconPanel],
+    tabs: [logoTab, iconTab, typeTab],
+    panels: [logoPanel, iconPanel, typePanel],
     body,
   });
 
@@ -63,5 +71,14 @@ test('createPageTabs activates requested panel and updates body dataset', () => 
   assert.equal(iconTab.getAttribute('aria-selected'), 'true');
   assert.equal(logoPanel.hidden, true);
   assert.equal(iconPanel.hidden, false);
+  assert.equal(typePanel.hidden, true);
   assert.equal(body.dataset.activeTab, 'iconography');
+
+  typeTab.click();
+
+  assert.equal(iconTab.getAttribute('aria-selected'), 'false');
+  assert.equal(typeTab.getAttribute('aria-selected'), 'true');
+  assert.equal(iconPanel.hidden, true);
+  assert.equal(typePanel.hidden, false);
+  assert.equal(body.dataset.activeTab, 'typography');
 });

@@ -1170,7 +1170,78 @@
   box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.04);
 }
 
+.dev-immersive .typography-section {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.dev-immersive .typography-section__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dev-immersive .typography-section__header h2 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 2.15rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.dev-immersive .typography-section__lede,
+.dev-immersive .typography-section__status {
+  margin: 0;
+  color: var(--muted);
+}
+
+.dev-immersive .typography-section__status.is-error {
+  color: var(--danger);
+}
+
+.dev-immersive .typography-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 340px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.dev-immersive .typography-controls {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid rgba(202, 211, 225, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dev-immersive .typography-field {
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+.dev-immersive .typography-field__select {
+  border-color: rgba(202, 211, 225, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.dev-immersive .typography-preview {
+  border: 1px solid rgba(16, 19, 24, 0.08);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #18233f;
+  box-shadow: inset 0 0 0 1px rgba(16, 19, 24, 0.04);
+}
+
 body.dev-immersive[data-active-tab="iconography"] #submission-bar-root {
+  display: none;
+}
+
+body.dev-immersive[data-active-tab="typography"] #submission-bar-root {
   display: none;
 }
 
@@ -1182,12 +1253,17 @@ body.dev-immersive[data-active-tab="iconography"] #submission-bar-root {
   .dev-immersive .iconography-section__header,
   .dev-immersive .iconography-feedback-modal__header,
   .dev-immersive .iconography-feedback-modal__footer,
+  .dev-immersive .typography-section__header,
   .dev-immersive .iconography-preview-modal__header {
     align-items: stretch;
     flex-direction: column;
   }
 
   .dev-immersive .iconography-add-request {
+    grid-template-columns: 1fr;
+  }
+
+  .dev-immersive .typography-layout {
     grid-template-columns: 1fr;
   }
 

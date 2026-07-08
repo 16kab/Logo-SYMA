@@ -5,6 +5,7 @@ import { startVisitTracking } from './visit-tracker.js';
 import { createPageTabs } from './page-tabs.js';
 import { createFinalChoiceSection } from './final-choice-section.js';
 import { createIconographySection } from './iconography-section.js';
+import { createTypographySection } from './typography-section.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   startVisitTracking();
@@ -16,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }).load();
   createIconographySection({
     root: document.getElementById('iconography-root'),
+  }).load();
+  createTypographySection({
+    root: document.getElementById('typography-root'),
   }).load();
 
   createComparatorPanel(document.getElementById('panel-left'), {

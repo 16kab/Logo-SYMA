@@ -14,3 +14,9 @@ test('public main module mounts the iconography screen', () => {
   assert.match(mainSource, /document\.getElementById\('iconography-root'\)/);
   assert.match(mainSource, /createIconographySection\(/);
 });
+
+test('public main module mounts the typography screen', () => {
+  assert.match(mainSource, /import\s+\{\s*createTypographySection\s*\}\s+from\s+'\.\/typography-section\.js';/);
+  assert.match(mainSource, /document\.getElementById\('typography-root'\)/);
+  assert.match(mainSource, /createTypographySection\(/);
+});

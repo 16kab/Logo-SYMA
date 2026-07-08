@@ -16,10 +16,11 @@ test('index enables the immersive dark theme by default', () => {
   assert.match(index, /data-experience="immersive-gallery"/);
 });
 
-test('index includes final choice and iconography roots', () => {
+test('index includes final choice, iconography, and typography roots', () => {
   assert.match(index, /id="final-choice-root"/);
   assert.match(index, /id="final-choice-action-root"/);
   assert.match(index, /id="iconography-root"/);
+  assert.match(index, /id="typography-root"/);
   assert.doesNotMatch(index, /class="iconography-empty"/);
 });
 
@@ -64,12 +65,15 @@ test('immersive theme styles the submission bar', () => {
   assert.match(css, /\.dev-immersive\s+\.submission-bar__send\s*\{/);
 });
 
-test('immersive theme styles tabs, final choice, modal, and iconography state', () => {
+test('immersive theme styles tabs, final choice, modal, iconography, and typography state', () => {
   assert.match(css, /\.dev-immersive\s+\.page-tabs\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.final-choice-section\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.final-choice-modal\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.iconography-section\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.typography-section\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.typography-preview\s*\{/);
   assert.match(css, /body\.dev-immersive\[data-active-tab="iconography"\]\s+#submission-bar-root/);
+  assert.match(css, /body\.dev-immersive\[data-active-tab="typography"\]\s+#submission-bar-root/);
 });
 
 test('immersive theme styles the iconography grid, states, requests, and feedback modal', () => {
