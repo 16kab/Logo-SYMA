@@ -152,7 +152,7 @@ test('renders iconography cards from the catalog and recolors each SVG', async (
 
     await section.load();
 
-    assert.match(collectText(root), /Selection iconographique/);
+    assert.match(collectText(root), /Sélection iconographique/);
     assert.equal(root.querySelectorAll('.iconography-card').length, 22);
     assert.equal(root.querySelectorAll('.iconography-card__decision').length, 22);
     assert.equal(recolored[0][0], 'SVG/iconographie/blobs.svg');
@@ -190,7 +190,7 @@ test('approving an iconography item shows the global validated state and modifie
 
     const firstCard = root.querySelector('.iconography-card');
     assert.match(firstCard.className, /is-approved/);
-    assert.match(collectText(firstCard), /Valide/);
+    assert.match(collectText(firstCard), /Validé/);
     assert.match(collectText(firstCard), /Modifier/);
   });
 });
@@ -294,7 +294,7 @@ test('adding a free request appends a simple titled card', async () => {
     root.querySelector('[data-role="request-title"]').value = 'Tasse vue face';
     await root.querySelector('[data-role="add-request"]').click();
 
-    assert.match(collectText(root), /Demandes ajoutees/);
+    assert.match(collectText(root), /Demandes ajoutées/);
     assert.match(collectText(root), /Tasse vue face/);
   });
 });

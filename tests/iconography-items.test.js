@@ -15,6 +15,7 @@ test('exposes the 22 copied iconography SVG assets', () => {
     title: 'Blobs',
     src: 'SVG/iconographie/blobs.svg',
   });
+  assert.equal(ICONOGRAPHY_ITEMS.find((item) => item.id === 'cafe-agite')?.title, 'Café agité');
   assert.equal(ICONOGRAPHY_ITEMS.at(-1).id, 'sonia-tel');
 });
 

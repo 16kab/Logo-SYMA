@@ -79,7 +79,7 @@ export function createIconographySection({
     }
 
     if (!response?.ok) {
-      setStatus('La modification n a pas pu etre enregistree.', true);
+      setStatus("La modification n'a pas pu être enregistrée.", true);
       return false;
     }
 
@@ -182,7 +182,7 @@ export function createIconographySection({
 
     if (!feedback.trim()) {
       status.setAttribute('role', 'alert');
-      status.textContent = 'Ajoutez un retour avant d enregistrer.';
+      status.textContent = "Ajoutez un retour avant d'enregistrer.";
       return;
     }
 
@@ -211,7 +211,7 @@ export function createIconographySection({
     recolor(svg, ICON_COLOR);
 
     if (itemState?.status === 'approved') {
-      decision.appendChild(createText('p', 'iconography-card__state', 'Valide'));
+      decision.appendChild(createText('p', 'iconography-card__state', 'Validé'));
       const reset = createButton('Modifier', 'iconography-card__secondary', { action: 'reset' });
       reset.addEventListener('click', () => postAction({ action: 'reset', itemId: item.id }));
       decision.appendChild(reset);
@@ -219,7 +219,7 @@ export function createIconographySection({
     }
 
     if (itemState?.status === 'rejected') {
-      decision.appendChild(createText('p', 'iconography-card__state', 'Retour demande'));
+      decision.appendChild(createText('p', 'iconography-card__state', 'Retour demandé'));
       const view = createButton('Voir le retour', 'iconography-card__feedback', { action: 'view-feedback' });
       view.addEventListener('click', () => openFeedbackModal(item.id));
       const reset = createButton('Modifier', 'iconography-card__secondary', { action: 'reset' });
@@ -256,14 +256,14 @@ export function createIconographySection({
     const input = document.createElement('input');
     input.className = 'iconography-add-request__input';
     input.setAttribute('data-role', 'request-title');
-    input.placeholder = 'Titre de l iconographie souhaitee';
+    input.placeholder = "Titre de l'iconographie souhaitée";
     label.appendChild(input);
     const button = createButton('Ajouter', 'iconography-add-request__button');
     button.setAttribute('data-role', 'add-request');
     button.addEventListener('click', async () => {
       const title = input.value;
       if (!title.trim()) {
-        setStatus('Ajoutez un titre avant d enregistrer.', true);
+        setStatus("Ajoutez un titre avant d'enregistrer.", true);
         return;
       }
       const saved = await postAction({ action: 'addRequest', title });
@@ -280,7 +280,7 @@ export function createIconographySection({
 
     const requests = document.createElement('section');
     requests.className = 'iconography-requests';
-    requests.appendChild(createText('h3', 'iconography-requests__title', 'Demandes ajoutees'));
+    requests.appendChild(createText('h3', 'iconography-requests__title', 'Demandes ajoutées'));
 
     const list = document.createElement('div');
     list.className = 'iconography-requests__list';
@@ -306,7 +306,7 @@ export function createIconographySection({
     header.className = 'iconography-section__header';
     const titleBlock = document.createElement('div');
     titleBlock.appendChild(createText('p', 'eyebrow', 'Iconographie'));
-    const title = createText('h2', '', 'Selection iconographique');
+    const title = createText('h2', '', 'Sélection iconographique');
     title.id = 'iconography-title';
     const intro = createText('p', 'iconography-section__lede', 'Validez les pistes, refusez-les avec un retour, ou ajoutez une demande libre.');
     titleBlock.appendChild(title);
