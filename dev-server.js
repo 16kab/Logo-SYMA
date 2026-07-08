@@ -9,6 +9,7 @@ import { createVisitHandler } from './api/visit.js';
 import { createVisitsHandler } from './api/visits.js';
 import { createAdminLoginHandler } from './api/admin-login.js';
 import { createFinalChoiceHandler } from './api/final-choice.js';
+import { createIconographyHandler } from './api/iconography.js';
 
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
@@ -22,6 +23,7 @@ const routes = {
   '/api/visit': createVisitHandler(kv),
   '/api/visits': createVisitsHandler(kv, getAdminPassword),
   '/api/final-choice': createFinalChoiceHandler(kv),
+  '/api/iconography': createIconographyHandler(kv),
   '/api/admin-login': createAdminLoginHandler(getAdminPassword),
 };
 
