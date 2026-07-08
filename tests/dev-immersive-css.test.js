@@ -77,5 +77,7 @@ test('immersive theme styles the iconography grid, states, requests, and feedbac
   assert.match(css, /\.dev-immersive\s+\.iconography-card\.is-approved/);
   assert.match(css, /\.dev-immersive\s+\.iconography-card\.is-rejected/);
   assert.match(css, /\.dev-immersive\s+\.iconography-feedback-modal\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.iconography-preview-modal\s*\{/);
+  assert.match(css, /\.dev-immersive\s+\.iconography-preview-modal__surface\s*\{/);
   assert.match(css, /\.dev-immersive\s+\.iconography-requests\s*\{/);
 });

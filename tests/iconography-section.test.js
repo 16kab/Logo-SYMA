@@ -99,6 +99,10 @@ function matches(element, selector) {
     return element.getAttribute?.('data-action') === dataActionMatch[1];
   }
 
+  if (/^[a-z][a-z0-9-]*$/i.test(selector)) {
+    return element.tagName?.toLowerCase() === selector.toLowerCase();
+  }
+
   return false;
 }
 
@@ -272,6 +276,28 @@ test('voir le retour reopens the saved feedback text', async () => {
     const modal = body.querySelector('.iconography-feedback-modal');
     assert.equal(modal.hidden, false);
     assert.equal(modal.querySelector('[data-role="feedback"]').value, 'A simplifier');
+  });
+});
+
+test('clicking an iconography visual opens a larger preview modal', async () => {
+  await withFakeDocument(async ({ body }) => {
+    const root = createFakeElement();
+    const recolored = [];
+    const section = createIconographySection({
+      root,
+      fetcher: async () => ({ ok: true, async json() { return { iconography: { items: {}, requests: [] } }; } }),
+      loadSvg: createSvgLoader(),
+      recolor: (svg, color) => recolored.push([svg.getAttribute('data-src'), color]),
+    });
+
+    await section.load();
+    await root.querySelector('.iconography-card__visual').click();
+
+    const modal = body.querySelector('.iconography-preview-modal');
+    assert.equal(modal.hidden, false);
+    assert.match(collectText(modal), /Blobs/);
+    assert.equal(modal.querySelector('[data-role="preview-surface"]').querySelector('svg').getAttribute('data-src'), 'SVG/iconographie/blobs.svg');
+    assert.deepEqual(recolored.at(-1), ['SVG/iconographie/blobs.svg', '#18233f']);
   });
 });
 

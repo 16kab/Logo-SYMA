@@ -441,6 +441,7 @@ main {
 }
 
 .iconography-card__visual {
+  width: 100%;
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
@@ -448,7 +449,15 @@ main {
   border-radius: var(--radius);
   padding: 1.25rem;
   background: #ffffff;
+  color: inherit;
+  font: inherit;
+  cursor: zoom-in;
   overflow: hidden;
+}
+
+.iconography-card__visual:focus-visible {
+  outline: 3px solid rgba(24, 35, 63, 0.22);
+  outline-offset: 3px;
 }
 
 .iconography-card__visual svg {
@@ -608,6 +617,87 @@ main {
   resize: vertical;
 }
 
+.iconography-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.iconography-preview-modal[hidden] {
+  display: none;
+}
+
+.iconography-preview-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.iconography-preview-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.iconography-preview-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.iconography-preview-modal__header h2 {
+  margin: 0;
+}
+
+.iconography-preview-modal__close {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.iconography-preview-modal__body {
+  display: grid;
+  padding: 1rem;
+}
+
+.iconography-preview-modal__surface {
+  width: min(560px, 100%);
+  max-height: min(66vh, 620px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 5vw, 3rem);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.iconography-preview-modal__surface svg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
 @media (max-width: 780px) {
   .comparator {
     grid-template-columns: 1fr;
@@ -620,7 +710,8 @@ main {
   .iconography-section__header,
   .iconography-add-request,
   .iconography-feedback-modal__header,
-  .iconography-feedback-modal__footer {
+  .iconography-feedback-modal__footer,
+  .iconography-preview-modal__header {
     align-items: stretch;
     grid-template-columns: 1fr;
     flex-direction: column;

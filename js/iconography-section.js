@@ -42,6 +42,7 @@ export function createIconographySection({
 } = {}) {
   let state = normalizeState();
   let modal = null;
+  let previewModal = null;
   let activeFeedbackItemId = null;
   const cardsById = new Map();
   let requestsSection = null;
@@ -162,6 +163,57 @@ export function createIconographySection({
     return modal;
   }
 
+  function ensurePreviewModal() {
+    if (previewModal) return previewModal;
+
+    previewModal = document.createElement('div');
+    previewModal.className = 'iconography-preview-modal';
+    previewModal.hidden = true;
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'iconography-preview-modal__backdrop';
+    backdrop.setAttribute('data-role', 'close-preview');
+
+    const dialog = document.createElement('section');
+    dialog.className = 'iconography-preview-modal__dialog';
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', 'iconography-preview-title');
+
+    const header = document.createElement('div');
+    header.className = 'iconography-preview-modal__header';
+    const titleBlock = document.createElement('div');
+    titleBlock.appendChild(createText('p', 'eyebrow', 'Aperçu'));
+    const title = createText('h2', '', '');
+    title.id = 'iconography-preview-title';
+    title.setAttribute('data-role', 'preview-title');
+    titleBlock.appendChild(title);
+    const close = createButton('Fermer', 'iconography-preview-modal__close');
+    close.setAttribute('data-role', 'close-preview');
+    close.textContent = 'x';
+    header.appendChild(titleBlock);
+    header.appendChild(close);
+
+    const body = document.createElement('div');
+    body.className = 'iconography-preview-modal__body';
+    const surface = document.createElement('div');
+    surface.className = 'iconography-preview-modal__surface';
+    surface.setAttribute('data-role', 'preview-surface');
+    body.appendChild(surface);
+
+    dialog.appendChild(header);
+    dialog.appendChild(body);
+    previewModal.appendChild(backdrop);
+    previewModal.appendChild(dialog);
+
+    previewModal.querySelectorAll('[data-role="close-preview"]').forEach((button) => {
+      button.addEventListener('click', closePreviewModal);
+    });
+
+    document.body.appendChild(previewModal);
+    return previewModal;
+  }
+
   function openFeedbackModal(itemId) {
     const modalEl = ensureModal();
     const textarea = modalEl.querySelector('[data-role="feedback"]');
@@ -175,6 +227,22 @@ export function createIconographySection({
 
   function closeFeedbackModal() {
     if (modal) modal.hidden = true;
+  }
+
+  function closePreviewModal() {
+    if (previewModal) previewModal.hidden = true;
+  }
+
+  async function openPreviewModal(item) {
+    const modalEl = ensurePreviewModal();
+    const title = modalEl.querySelector('[data-role="preview-title"]');
+    const surface = modalEl.querySelector('[data-role="preview-surface"]');
+    title.textContent = item.title;
+    clear(surface);
+    modalEl.hidden = false;
+
+    const svg = await loadSvg(item.src, surface);
+    recolor(svg, ICON_COLOR);
   }
 
   async function submitFeedback() {
@@ -243,8 +311,11 @@ export function createIconographySection({
     card.className = 'iconography-card';
 
     const title = createText('h3', 'iconography-card__title', item.title);
-    const visual = document.createElement('div');
+    const visual = document.createElement('button');
+    visual.type = 'button';
     visual.className = 'iconography-card__visual';
+    visual.setAttribute('aria-label', `Voir ${item.title} en grand`);
+    visual.addEventListener('click', () => openPreviewModal(item));
     const decision = document.createElement('div');
     decision.className = 'iconography-card__decision';
 
@@ -359,5 +430,5 @@ export function createIconographySection({
     root.appendChild(section);
   }
 
-  return { load, openFeedbackModal };
+  return { load, openFeedbackModal, openPreviewModal };
 }
