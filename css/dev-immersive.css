@@ -1019,7 +1019,7 @@
 .dev-immersive .iconography-card__state {
   background: rgba(255, 255, 255, 0.86);
   color: #18233f;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
 }
 
 .dev-immersive .iconography-card__icon-action,

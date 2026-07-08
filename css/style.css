@@ -431,11 +431,22 @@ main {
 .iconography-requests__title,
 .iconography-request-card__title {
   margin: 0;
+}
+
+.iconography-requests__title {
   overflow-wrap: anywhere;
 }
 
+.iconography-card__title,
+.iconography-request-card__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .iconography-card__title {
-  padding-right: 7rem;
+  padding-right: 5.5rem;
   font-size: 0.95rem;
   font-weight: 750;
 }
@@ -499,15 +510,16 @@ main {
 
 .iconography-card__state {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.55rem;
+  right: 0.55rem;
   margin: 0;
   border-radius: 999px;
-  padding: 0.24rem 0.52rem;
+  padding: 0.16rem 0.42rem;
   background: var(--surface-soft);
   color: var(--text);
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 750;
+  line-height: 1;
   text-transform: uppercase;
 }
 
